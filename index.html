@@ -3,109 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisador de Exames</title>
+    <title>TELELAB - Análise Profissional</title>
     <meta name="theme-color" content="#ffffff"/>
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* bg-slate-50 */
         }
         .loader {
-            border-top-color: #0d9488; /* teal-600 */
+            border-top-color: #9f1239; /* rose-800 */
             -webkit-animation: spin 1s linear infinite;
             animation: spin 1s linear infinite;
+        }
+        .loader-small {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .tab-btn.active {
-            border-bottom-color: #0d9488; /* teal-600 */
-            color: #0d9488;
+            border-bottom-color: #9f1239; /* rose-800 */
+            color: #9f1239;
             font-weight: 600;
         }
-        @media print {
-            body {
-                background-color: white !important;
-            }
-            body * {
-                visibility: hidden;
-            }
-            #report-output, #report-output * {
-                visibility: visible;
-            }
-            .tab-buttons-container, #action-buttons-container, #main-header, #main-footer, #input-section, #disclaimer-section {
-                display: none !important;
-            }
-            #report-output {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                box-shadow: none;
-                border: none;
-            }
-            .tab-content {
-                display: block !important;
-                margin-bottom: 2rem;
-                padding: 0 !important;
-            }
-            h2, h3 {
-                padding-top: 1rem;
-                border-top: 1px solid #ccc;
-            }
+        .file-upload-btn {
+            background-color: #f9fafb;
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s;
+        }
+        .file-upload-btn:hover {
+            background-color: #fef2f2;
+            border-color: #fca5a5;
+        }
+        .prose h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #881337; /* rose-900 */
         }
     </style>
 </head>
 <body class="bg-slate-50 text-gray-800">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
         <header id="main-header" class="text-center mb-8 flex flex-col items-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-wide">MISSIONARY MEDICAL CARE</h1>
-            <h2 class="text-lg md:text-xl font-semibold text-teal-700 mt-2 tracking-wide">TELESSAÚDE MISSIONÁRIA ATÉ OS CONFINS DA TERRA</h2>
-            <p class="text-md text-gray-600 mt-4">Interpreta exames laboratoriais, oferecendo insights precisos, sem substituir diagnósticos médicos.</p>
+            <!-- Logo Laboratorio Vermelho -->
+            <svg class="h-20 w-20 mb-3 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 00-1 1v.217l-4.21 6.315A1 1 0 005.79 12H14.2a1 1 0 00.9-.567L11 4.217V4a1 1 0 00-1-1zM5 13a1 1 0 00-1 1v2a1 1 0 001 1h10a1 1 0 001-1v-2a1 1 0 00-1-1H5z" clip-rule="evenodd" />
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-wide">MISSIONARY MEDICAL CARE</h1>
+            <h2 class="text-lg md:text-xl font-semibold text-rose-800 mt-2 tracking-wide">Analisador de Exames para Missionários</h2>
         </header>
 
         <main>
             <!-- Sección de Inserción de Datos -->
             <div id="input-section" class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <form id="lab-form">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-900 border-b border-gray-200 pb-3">Seus Exames</h2>
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-900 border-b border-gray-200 pb-3">Dados do Paciente e Exames</h2>
                     
-                    <div>
-                        <label for="exam-text" class="block text-sm font-medium text-gray-700">Copie e cole aqui o seu relatório de exame</label>
-                        <textarea id="exam-text" rows="12" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 focus:ring-teal-500 focus:border-teal-500" placeholder="Pode colar o texto do seu exame diretamente nesta caixa. Por exemplo: Hemoglobina: 11.2 g/dL (Ref: 12-16), Leucócitos: 8500 /mm³ (Ref: 4000-11000)..."></textarea>
+                    <!-- Upload de Arquivo -->
+                    <div class="mb-8">
+                        <label for="file-upload" class="block text-lg font-semibold text-gray-800 mb-2">Análise por Imagem</label>
+                         <p class="text-sm text-gray-500 mb-3">Suba uma foto (JPEG, PNG) do exame para uma análise rápida.</p>
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md file-upload-btn">
+                            <div class="space-y-1 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-rose-700 hover:text-rose-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-rose-500">
+                                        <span>Carregar um ficheiro</span>
+                                        <input id="file-upload" name="file-upload" type="file" class="sr-only" accept="image/jpeg, image/png">
+                                    </label>
+                                    <p class="pl-1">ou arraste e solte</p>
+                                </div>
+                                <p class="text-xs text-gray-500" id="file-name-display">PNG, JPG até 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center my-4">
+                        <span class="text-gray-500 font-semibold">E / OU</span>
+                    </div>
+
+                    <!-- Formulário Detalhado -->
+                    <label class="block text-lg font-semibold text-gray-800 mb-2">Análise por Dados Manuais</label>
+                    <p class="text-sm text-gray-500 mb-3">Preencha os campos abaixo para uma análise detalhada. Pode usar em conjunto com a imagem.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+                        <!-- Colunas do formulário... -->
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3 text-rose-800">Serie Roja</h3>
+                                <div class="space-y-3">
+                                    <div><label for="hemoglobina" class="text-sm font-medium text-gray-700">Hemoglobina (g/dL)</label><input type="text" id="hemoglobina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="12-18"></div>
+                                    <div><label for="hematocrito" class="text-sm font-medium text-gray-700">Hematocrito (%)</label><input type="text" id="hematocrito" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="36-50"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3 text-rose-800">Serie Blanca</h3>
+                                 <div class="space-y-3">
+                                    <div><label for="leucocitos" class="text-sm font-medium text-gray-700">Leucocitos (/mm³)</label><input type="text" id="leucocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="4k-11k"></div>
+                                    <div><label for="plaquetas" class="text-sm font-medium text-gray-700">Plaquetas (/mm³)</label><input type="text" id="plaquetas" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="150k-400k"></div>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3 text-rose-800">Química</h3>
+                                <div class="space-y-3">
+                                    <div><label for="glicose" class="text-sm font-medium text-gray-700">Glucemia (mg/dL)</label><input type="text" id="glicose" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="70-125"></div>
+                                    <div><label for="creatinina" class="text-sm font-medium text-gray-700">Creatinina (mg/dL)</label><input type="text" id="creatinina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="0.6-1.4"></div>
+                                    <div><label for="ast_tgo" class="text-sm font-medium text-gray-700">AST/TGO (U/L)</label><input type="text" id="ast_tgo" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="10-40"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3 text-rose-800">Enf. Regionais</h3>
+                                <div class="space-y-3">
+                                     <div><label for="chagas_serologia" class="text-sm font-medium text-gray-700">Chagas Serologia</label><input type="text" id="chagas_serologia" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="Reactivo/Não"></div>
+                                     <div><label for="dengue_serologia" class="text-sm font-medium text-gray-700">Dengue NS1/IgM</label><input type="text" id="dengue_serologia" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="Positivo/Negativo"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mt-6">
-                         <label for="outros_dados" class="block text-sm font-medium text-gray-700">Sintomas ou preocupações principais (opcional)</label>
-                         <textarea id="outros_dados" rows="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 focus:ring-teal-500 focus:border-teal-500" placeholder="Ex: Sinto muito cansaço e tenho tido dores de cabeça."></textarea>
+                         <label for="outros_dados" class="block text-sm font-medium text-gray-700">Dados Clínicos e Contexto (Principal Diagnóstico Suspeito)</label>
+                         <textarea id="outros_dados" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 focus:ring-rose-500 focus:border-rose-500" placeholder="Ex: Paciente com suspeita de Fibrose Pulmonar Idiopática. Apresenta tosse seca e dispneia."></textarea>
                     </div>
                     
-                    <div id="action-buttons-container" class="mt-8 pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-center items-center gap-4 flex-wrap">
-                        <button type="button" id="generate-report-btn" class="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-teal-300">
-                            Analisar Meus Exames
-                        </button>
-                        <button type="button" id="print-report-btn" class="w-full sm:w-auto bg-slate-600 hover:bg-slate-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-slate-300 flex items-center justify-center gap-2" style="display: none;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2v-6a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" /></svg>
-                            Imprimir Relatório
-                        </button>
-                        <button type="button" id="whatsapp-share-btn" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-300 flex items-center justify-center gap-2" style="display: none;">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.269.655 4.398 1.905 6.316l-.205.283-1.217 4.459 4.525-1.187-.282-.192z"/></svg>
-                            Partilhar no WhatsApp
-                        </button>
-                        <button type="button" id="clear-form-btn" class="w-full sm:w-auto bg-white hover:bg-gray-100 text-gray-700 font-bold py-2.5 px-6 rounded-lg shadow-md border border-gray-300 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-200">
-                            Limpar
+                    <div id="action-buttons-container" class="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+                        <button type="button" id="generate-report-btn" class="flex items-center justify-center bg-rose-800 hover:bg-rose-900 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-rose-300 disabled:opacity-50">
+                            Gerar Análise Profissional
                         </button>
                     </div>
                 </form>
@@ -113,251 +157,197 @@
 
             <div id="loading-section" class="text-center my-10" style="display: none;">
                 <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-24 w-24 mx-auto"></div>
-                <p class="mt-4 text-lg text-gray-600">Analisando seus dados... Por favor, aguarde.</p>
+                <p class="mt-4 text-lg text-gray-600">Analisando dados... Por favor, aguarde.</p>
             </div>
             
-            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative my-6" role="alert">
-                <strong class="font-bold">¡Ocurrió un error!</strong>
-                <span id="error-content" class="block sm:inline">No fue posible generar el reporte. Por favor, intente nuevamente.</span>
-            </div>
-
-            <!-- Aviso Legal -->
-            <div id="disclaimer-section" style="display: none;" class="mt-10 bg-red-50 p-4 rounded-lg border border-red-300 text-center">
-                <h3 class="font-bold text-red-700 text-lg">ATENÇÃO - AVISO IMPORTANTE</h3>
-                <p class="text-sm text-red-600 mt-2">
-                    As informações neste aplicativo não têm a intenção de ser aconselhamento profissional nem têm a intenção de substituir uma consulta pessoal com um médico, farmacêutico ou outro profissional de saúde qualificado. O leitor não deve desconsiderar aconselhamento médico nem adiar a busca por aconselhamento médico devido a alguma informação encontrada neste aplicativo.
-                </p>
+            <div id="error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-6" role="alert">
+                <p class="font-bold">Ocorreu um erro</p>
+                <p id="error-content">Não foi possível gerar a análise. Por favor, tente novamente.</p>
             </div>
 
             <!-- Seção do Relatório Gerado -->
-            <div id="report-output" style="display: none;" class="mt-4 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <!-- Abas de Navegação -->
-                <div class="tab-buttons-container border-b border-gray-200 mb-4">
-                    <nav class="tab-buttons -mb-px flex space-x-6" aria-label="Tabs">
-                        <button class="tab-btn active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" data-tab="tabla-resumen-section">Resumo dos Resultados</button>
-                        <button class="tab-btn whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="explicacion-sencilla-section">Explicação Simplificada</button>
-                    </nav>
-                </div>
-                
-                <!-- Conteúdo das Abas -->
-                <div id="tabla-resumen-section" class="tab-content active">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full">
-                            <thead class="bg-teal-600">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Parámetro</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Seu Valor</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Interpretação Geral</th>
-                                </tr>
-                            </thead>
-                            <tbody id="summary-table-body" class="bg-white divide-y divide-gray-200"></tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                 <div id="explicacion-sencilla-section" class="tab-content">
-                    <div id="explicacion-sencilla-content" class="prose max-w-none text-gray-700"></div>
-                </div>
+            <div id="report-output" style="display: none;" class="mt-10 bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">Folheto do Paciente</h2>
+                <div id="patient-handout-section" class="prose max-w-none text-gray-700"></div>
+                 <div class="mt-6 border-t pt-4 text-sm text-gray-500">
+                    <strong>Disclaimer:</strong> Este folheto é apenas para fins informativos gerais e não substitui o aconselhamento médico profissional.
+                 </div>
             </div>
         </main>
-
+        
         <footer id="main-footer" class="text-center mt-12 pt-8 border-t border-gray-200 text-sm text-gray-500 max-w-3xl mx-auto">
-             <h3 class="text-2xl font-bold text-gray-800 tracking-wide mb-4">MISSIONARY MEDICAL CARE</h3>
-             <div class="mt-6 bg-red-50 border border-red-300 rounded-lg p-4">
-                <h4 class="font-bold text-red-700">ATENÇÃO - AVISO IMPORTANTE</h4>
-                <p class="mt-2 text-sm text-red-600">
-                    Este é um serviço informativo e não substitui uma consulta médica. As informações neste aplicativo não têm a intenção de ser aconselhamento profissional nem têm a intenção de substituir uma consulta pessoal com um médico, farmacêutico ou outro profissional de saúde qualificado. O leitor não deve desconsiderar aconselhamento médico nem adiar a busca por aconselhamento médico devido a alguma informação encontrada neste aplicativo.
-                </p>
-            </div>
-             <p class="mt-4">&copy; 2024. Todos los derechos reservados.</p>
+            <p>&copy; 2024 Missionary Medical Care</p>
         </footer>
     </div>
 
     <script type="module">
-        let reportDataForSharing = null; // Variável global para guardar os dados do relatório
+        let fileBase64 = null;
+        let fileType = null;
+
+        const fileUploadInput = document.getElementById('file-upload');
+        const fileNameDisplay = document.getElementById('file-name-display');
+
+        fileUploadInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) {
+                fileBase64 = null; fileType = null;
+                fileNameDisplay.textContent = "PNG, JPG até 10MB";
+                return;
+            }
+            fileNameDisplay.textContent = `Ficheiro selecionado: ${file.name}`;
+            const reader = new FileReader();
+            reader.onload = () => {
+                fileBase64 = reader.result.split(',')[1];
+                fileType = file.type;
+            };
+            reader.readAsDataURL(file);
+        });
 
         const generateBtn = document.getElementById('generate-report-btn');
-        const clearBtn = document.getElementById('clear-form-btn');
-        const printBtn = document.getElementById('print-report-btn');
-        const whatsappBtn = document.getElementById('whatsapp-share-btn');
         const labForm = document.getElementById('lab-form');
-        
         const loadingSection = document.getElementById('loading-section');
         const errorMessage = document.getElementById('error-message');
         const reportOutput = document.getElementById('report-output');
-        const disclaimerSection = document.getElementById('disclaimer-section');
 
         generateBtn.addEventListener('click', async () => {
-            const examText = document.getElementById('exam-text').value;
-
-            if (!examText.trim()) {
-                alert("Por favor, cole o texto do seu exame na caixa.");
+            const formInputs = Array.from(labForm.querySelectorAll('input[type="text"], textarea'));
+            const textData = formInputs.map(input => {
+                const label = labForm.querySelector(`label[for="${input.id}"]`);
+                return { id: label ? label.innerText : input.id, value: input.value };
+            }).filter(item => item.value.trim() !== '');
+            
+            if (textData.length === 0 && !fileBase64) {
+                alert("Por favor, suba uma imagem ou preencha pelo menos um campo do formulário.");
                 return;
             }
 
-            // Esconder seções de resultado e mostrar carregamento
-            errorMessage.style.display = 'none';
-            reportOutput.style.display = 'none';
-            disclaimerSection.style.display = 'none';
-            printBtn.style.display = 'none';
-            whatsappBtn.style.display = 'none';
             loadingSection.style.display = 'block';
+            reportOutput.style.display = 'none';
+            errorMessage.style.display = 'none';
             
-            const outrosDados = document.getElementById('outros_dados').value;
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = `<div class="loader-small"></div><span class="ml-2">Analisando...</span>`;
 
-            let promptText = `
-                Aja como um assistente médico empático explicando resultados de exames para um paciente leigo.
-                A partir do texto do exame e dos sintomas fornecidos, faça o seguinte:
-                1.  Identifique os principais parâmetros que estão alterados (fora dos valores de referência). Ignore os que estão normais.
-                2.  Crie uma tabela resumo APENAS para os itens alterados.
-                3.  Escreva uma explicação geral e muito simples sobre o que essas alterações podem significar, sem causar alarme.
-                4.  SEMPRE reforce que a interpretação final deve ser feita por um médico e que a ferramenta é apenas informativa.
-                A resposta DEVE seguir o formato JSON do schema. O idioma deve ser o mesmo dos dados do paciente (espanhol ou português).
+            let promptParts = [];
+            let mainPrompt = `
+                Aja como um médico especialista escrevendo um "Folheto do Paciente" claro e empático.
+                Com base nos dados laboratoriais, de imagem e clínicos fornecidos, identifique o diagnóstico principal (ou o mais provável).
+                Em seguida, gere um folheto informativo sobre essa condição, seguindo EXATAMENTE a estrutura do schema JSON.
+                O idioma deve ser português.
 
-                ## Texto do Exame do Paciente:
-                ${examText}
+                **Estrutura do Folheto:**
+                - **O que é?** Uma definição clara e simples da doença.
+                - **Sinais/Sintomas Comuns:** Liste os sintomas mais típicos.
+                - **Causas ou Fatores de Risco:** Explique as possíveis causas ou fatores que aumentam o risco.
+                - **Possíveis Complicações:** Descreva as complicações que podem surgir.
+                - **Opções de Tratamento:** Apresente as abordagens de tratamento de forma geral.
+                - **Quando Procurar Ajuda:** Dê orientações claras sobre quando o paciente deve procurar atendimento médico.
+                
+                O texto deve ser educativo e tranquilizador, evitando jargões técnicos excessivos.
 
-                ## Sintomas/Preocupações do Paciente:
-                ${outrosDados || "Nenhum informado."}
+                **Dados Fornecidos para Análise:**
             `;
-            
+
+             promptParts.push({ text: mainPrompt });
+
+            if (fileBase64) {
+                promptParts.push({ text: "Imagem do Exame:" });
+                promptParts.push({ inline_data: { mime_type: fileType, data: fileBase64 } });
+            }
+
+            if (textData.length > 0) {
+                const textInputString = textData.map(item => `- ${item.id}: ${item.value}`).join('\n');
+                promptParts.push({ text: `\n\nDados Manuais e Clínicos:\n${textInputString}`});
+            }
+
             const schema = {
                 type: "OBJECT",
                 properties: {
-                    tablaResumen: { type: "ARRAY", items: { type: "OBJECT", properties: { parametro: { type: "STRING" }, valor: { type: "STRING" }, interpretacion: { type: "STRING" } }, required: ["parametro", "valor", "interpretacion"] } },
-                    explicacionSencilla: { type: "STRING" }
+                    patientHandout: {
+                        type: "OBJECT",
+                        properties: {
+                            diseaseName: { type: "STRING", description: "Nome da doença principal identificada." },
+                            whatIsIt: { type: "STRING", description: "Definição da doença." },
+                            commonSymptoms: { type: "STRING", description: "Sinais e sintomas comuns." },
+                            riskFactors: { type: "STRING", description: "Causas ou fatores de risco." },
+                            complications: { type: "STRING", description: "Possíveis complicações." },
+                            treatmentOptions: { type: "STRING", description: "Opções de tratamento." },
+                            whenToSeekHelp: { type: "STRING", description: "Quando procurar ajuda médica." }
+                        },
+                        required: ["diseaseName", "whatIsIt", "commonSymptoms", "riskFactors", "complications", "treatmentOptions", "whenToSeekHelp"]
+                    }
                 },
-                required: ["tablaResumen", "explicacionSencilla"]
+                required: ["patientHandout"]
             };
 
             try {
                 const apiKey = "AIzaSyBSwG0EMH7kvf7DLo4j280wb42uaWmp_ZA"; 
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                const payload = { contents: [{ parts: [{text: promptText}] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
-                
+                const payload = { contents: [{ parts: promptParts }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
 
                 if (!response.ok) {
-                    let errorMsg = `Error de API: ${response.status}.`;
                     const errorBody = await response.json().catch(() => null);
-                    if(errorBody && errorBody.error) {
-                        errorMsg = errorBody.error.message;
-                    }
-                    throw new Error(errorMsg);
+                    throw new Error(errorBody?.error?.message || `Error de API: ${response.status}`);
                 }
-
                 const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts) {
-                    reportDataForSharing = JSON.parse(result.candidates[0].content.parts[0].text);
-                    displayReport(reportDataForSharing);
+                if (result.candidates && result.candidates[0].content) {
+                    const reportData = JSON.parse(result.candidates[0].content.parts[0].text);
+                    displayReport(reportData);
                 } else {
-                     throw new Error("La respuesta de la API fue inválida, vacía o não contém a informação esperada.");
+                     throw new Error("Resposta da API inválida.");
                 }
             } catch (error) {
                 console.error("Error al generar reporte:", error);
-                document.getElementById('error-content').textContent = error.message;
+                const errorContent = document.getElementById('error-content');
+                if (error.message && error.message.toLowerCase().includes('overloaded')) {
+                    errorContent.textContent = "O servidor de análise está sobrecarregado no momento. Por favor, aguarde alguns instantes e tente novamente.";
+                } else {
+                    errorContent.textContent = error.message;
+                }
                 errorMessage.style.display = 'block';
             } finally {
                 loadingSection.style.display = 'none';
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = 'Gerar Análise Profissional';
             }
-        });
-
-        clearBtn.addEventListener('click', () => {
-            labForm.reset();
-            reportOutput.style.display = 'none';
-            disclaimerSection.style.display = 'none';
-            printBtn.style.display = 'none';
-            whatsappBtn.style.display = 'none';
-            reportDataForSharing = null;
-            window.scrollTo(0, 0);
-        });
-
-        printBtn.addEventListener('click', () => {
-            window.print();
-        });
-
-        whatsappBtn.addEventListener('click', () => {
-            if (!reportDataForSharing) return;
-
-            let message = "Olá! Aqui está um resumo da análise do seu exame gerada pelo TELELAB:\n\n";
-            message += "*Resultados Alterados:*\n";
-            
-            if(reportDataForSharing.tablaResumen && reportDataForSharing.tablaResumen.length > 0){
-                reportDataForSharing.tablaResumen.forEach(item => {
-                    message += `- *${item.parametro}:* ${item.valor} (${item.interpretacion})\n`;
-                });
-            } else {
-                message += "- Nenhum resultado alterado foi identificado.\n";
-            }
-
-            message += "\n*Explicação Geral:*\n";
-            message += `${reportDataForSharing.explicacionSencilla}\n\n`;
-            message += "*AVISO IMPORTANTE:* Este é um resumo informativo gerado por IA e não substitui uma consulta. Por favor, mostre estes resultados ao seu médico para uma avaliação completa.";
-
-            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        });
-
-        const tabs = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetId = tab.dataset.tab;
-                const target = document.getElementById(targetId);
-
-                tabs.forEach(t => {
-                    t.classList.remove('active', 'text-teal-600', 'border-teal-600');
-                    t.classList.add('text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'border-transparent');
-                });
-                tab.classList.add('active', 'text-teal-600', 'border-teal-600');
-                
-                tabContents.forEach(c => c.classList.remove('active'));
-                target.classList.add('active');
-            });
         });
 
         function displayReport(data) {
-            const tableBody = document.getElementById('summary-table-body');
-            tableBody.innerHTML = '';
-            if (data.tablaResumen && data.tablaResumen.length > 0) {
-                data.tablaResumen.forEach((item, index) => {
-                    const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
-                    let valueClass = 'text-gray-900';
-                    const interp = (item.interpretacion || "").toLowerCase();
-                    if (interp.includes('alto') || interp.includes('aumentado') || interp.includes('elevado') || interp.includes('positiv') || interp.includes('reactivo') || interp.includes('>')) {
-                        valueClass = 'text-red-600 font-semibold';
-                    } else if (interp.includes('bajo') || interp.includes('disminuido') || interp.includes('<')) {
-                        valueClass = 'text-blue-600 font-semibold';
-                    }
-                    const row = `<tr class="${bgColor}">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.parametro}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm ${valueClass}">${item.valor}</td>
-                        <td class="px-6 py-4 text-sm text-gray-700">${item.interpretacion}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
-                });
-            } else {
-                 tableBody.innerHTML = `<tr><td colspan="3" class="text-center py-4">Não foram encontradas alterações significativas ou o formato do exame não pôde ser lido. Consulte sempre o seu médico.</td></tr>`;
+            const handout = data.patientHandout;
+            const handoutContainer = document.getElementById('patient-handout-section');
+
+            if (!handout) {
+                handoutContainer.innerHTML = `<p>Não foi possível gerar o folheto informativo com os dados fornecidos.</p>`;
+                reportOutput.style.display = 'block';
+                return;
             }
 
-            document.getElementById('explicacion-sencilla-content').innerHTML = `<h3 class="text-lg font-semibold text-gray-800 mb-2">Entendendo seus resultados:</h3><p>${(data.explicacionSencilla || 'Consulte o seu médico para uma interpretação completa dos seus resultados.').replace(/\n/g, '</p><p>')}</p>`;
+            handoutContainer.innerHTML = `
+                <h3 class="!text-2xl !font-bold !text-gray-900">${handout.diseaseName}</h3>
+                
+                <h3>O que é?</h3>
+                <p>${handout.whatIsIt}</p>
 
-            tabs.forEach((btn, index) => {
-                btn.classList.toggle('active', index === 0);
-            });
-            tabContents.forEach((content, index) => {
-                content.classList.toggle('active', index === 0);
-            });
+                <h3>Sinais/sintomas comuns</h3>
+                <p>${handout.commonSymptoms}</p>
+
+                <h3>Causas ou fatores de risco</h3>
+                <p>${handout.riskFactors}</p>
+
+                <h3>Possíveis complicações</h3>
+                <p>${handout.complications}</p>
+
+                <h3>Opções de tratamento</h3>
+                <p>${handout.treatmentOptions}</p>
+
+                <h3>Quando procurar ajuda</h3>
+                <p>${handout.whenToSeekHelp}</p>
+            `;
             
-            // Tornar os botões e seções visíveis
-            disclaimerSection.style.display = 'block';
             reportOutput.style.display = 'block';
-            printBtn.style.display = 'inline-flex';
-            whatsappBtn.style.display = 'inline-flex';
-            
             reportOutput.scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
 </html>
-
