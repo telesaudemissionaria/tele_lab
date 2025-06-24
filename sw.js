@@ -1,8 +1,9 @@
 // Define um nome e versão para o cache
-const CACHE_NAME = 'lab-interpreter-cache-v1';
+const CACHE_NAME = 'telelab-pro-cache-v1';
 // Lista de ficheiros a serem guardados no cache para funcionamento offline
 const urlsToCache = [
   './', // O ficheiro HTML principal
+  './index.html',
   './manifest.json',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
@@ -47,6 +48,12 @@ self.addEventListener('fetch', event => {
           return response;
         }
         // Se não for encontrado no cache, faz o pedido à rede
+        return fetch(event.request);
+      }
+    )
+  );
+});
+
         return fetch(event.request);
       }
     )
