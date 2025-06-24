@@ -147,9 +147,12 @@
                          <textarea id="outros_dados" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 focus:ring-rose-500 focus:border-rose-500" placeholder="Ex: Paciente com suspeita de Fibrose Pulmonar Idiopática. Apresenta tosse seca e dispneia."></textarea>
                     </div>
                     
-                    <div id="action-buttons-container" class="mt-8 pt-6 border-t border-gray-200 flex justify-center">
+                    <div id="action-buttons-container" class="mt-8 pt-6 border-t border-gray-200 flex justify-center flex-wrap gap-4">
                         <button type="button" id="generate-report-btn" class="flex items-center justify-center bg-rose-800 hover:bg-rose-900 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-rose-300 disabled:opacity-50">
                             Gerar Análise Profissional
+                        </button>
+                        <button type="button" id="install-app-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300" style="display: none;">
+                            Instalar App
                         </button>
                     </div>
                 </form>
@@ -181,6 +184,29 @@
     </div>
 
     <script type="module">
+        // --- Lógica PWA ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => console.log('Service worker registered', reg))
+                .catch(err => console.log('Service worker not registered', err));
+            });
+        }
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-app-btn');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+        installBtn.addEventListener('click', (e) => {
+            installBtn.style.display = 'none';
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                deferredPrompt = null;
+            });
+        });
+
+        // --- Lógica da Aplicação ---
         let fileBase64 = null;
         let fileType = null;
 
