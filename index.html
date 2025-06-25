@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TELELAB - Análise Profissional</title>
+    <title>MISSIONARY MEDICAL CARE</title>
     <meta name="theme-color" content="#ffffff"/>
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,145 +14,215 @@
             background-color: #f8fafc; /* bg-slate-50 */
         }
         .loader {
-            border-top-color: #9f1239; /* rose-800 */
+            border-top-color: #dc2626; /* red-600 */ /* Changed from teal-600 to red-600 */
             -webkit-animation: spin 1s linear infinite;
             animation: spin 1s linear infinite;
-        }
-        .loader-small {
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid #fff;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .tab-btn.active {
-            border-bottom-color: #9f1239; /* rose-800 */
-            color: #9f1239;
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* New styles for alternating tab colors */
+        .tab-btn.active.black-tab {
+            border-bottom-color: #1a202c; /* black */
+            color: #1a202c;
             font-weight: 600;
         }
-        .file-upload-btn {
-            background-color: #f9fafb;
-            border: 2px dashed #d1d5db;
-            transition: all 0.3s;
-        }
-        .file-upload-btn:hover {
-            background-color: #fef2f2;
-            border-color: #fca5a5;
-        }
-        .prose h3 {
-            margin-bottom: 0.5rem;
-            font-size: 1.25rem;
+        .tab-btn.active.red-tab {
+            border-bottom-color: #dc2626; /* red-600 */
+            color: #dc2626;
             font-weight: 600;
-            color: #881337; /* rose-900 */
+        }
+        .tab-btn.inactive {
+            color: #64748b; /* slate-500 */
+            border-bottom-color: transparent;
+        }
+        @media print {
+            body {
+                background-color: white !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            #report-output, #report-output * {
+                visibility: visible;
+            }
+             .tab-buttons-container, #action-buttons-container, #main-header, #main-footer, #input-section, #whatsapp-share-btn { /* Hide the share button on print */
+                display: none !important;
+            }
+            #report-output {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                border: none;
+            }
+            .tab-content {
+                display: block !important; /* Mostra todo o conteúdo na impressão */
+                margin-bottom: 2rem;
+                padding: 0 !important;
+            }
+            h2 {
+                padding-top: 1rem;
+                border-top: 1px solid #ccc;
+            }
         }
     </style>
 </head>
 <body class="bg-slate-50 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
-        <header id="main-header" class="text-center mb-8 flex flex-col items-center">
-            <!-- Logo Laboratorio Vermelho -->
-            <svg class="h-20 w-20 mb-3 text-red-600" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 3a1 1 0 00-1 1v.217l-4.21 6.315A1 1 0 005.79 12H14.2a1 1 0 00.9-.567L11 4.217V4a1 1 0 00-1-1zM5 13a1 1 0 00-1 1v2a1 1 0 001 1h10a1 1 0 001-1v-2a1 1 0 00-1-1H5z" clip-rule="evenodd" />
-            </svg>
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-wide">MISSIONARY MEDICAL CARE</h1>
-            <h2 class="text-lg md:text-xl font-semibold text-rose-800 mt-2 tracking-wide">Analisador de Exames para Missionários</h2>
+        <header id="main-header" class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">MISSIONARY MEDICAL CARE ⚕️</h1>
+            <p class="text-md text-gray-600 mt-2">Uma ferramenta de apoio para o análise de exames, baseada em IA e em suas referências.</p>
         </header>
 
         <main>
             <!-- Sección de Inserción de Datos -->
             <div id="input-section" class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <form id="lab-form">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-900 border-b border-gray-200 pb-3">Dados do Paciente e Exames</h2>
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-900 border-b border-gray-200 pb-3">Datos del Paciente y Exámenes</h2>
                     
-                    <!-- Upload de Arquivo -->
-                    <div class="mb-8">
-                        <label for="file-upload" class="block text-lg font-semibold text-gray-800 mb-2">Análise por Imagem</label>
-                         <p class="text-sm text-gray-500 mb-3">Suba uma foto (JPEG, PNG) do exame para uma análise rápida.</p>
-                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md file-upload-btn">
-                            <div class="space-y-1 text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                <div class="flex text-sm text-gray-600">
-                                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-rose-700 hover:text-rose-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-rose-500">
-                                        <span>Carregar um ficheiro</span>
-                                        <input id="file-upload" name="file-upload" type="file" class="sr-only" accept="image/jpeg, image/png">
-                                    </label>
-                                    <p class="pl-1">ou arraste e solte</p>
-                                </div>
-                                <p class="text-xs text-gray-500" id="file-name-display">PNG, JPG até 10MB</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center my-4">
-                        <span class="text-gray-500 font-semibold">E / OU</span>
-                    </div>
-
-                    <!-- Formulário Detalhado -->
-                    <label class="block text-lg font-semibold text-gray-800 mb-2">Análise por Dados Manuais</label>
-                    <p class="text-sm text-gray-500 mb-3">Preencha os campos abaixo para uma análise detalhada. Pode usar em conjunto com a imagem.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
-                        <!-- Colunas do formulário... -->
-                        <div class="space-y-6">
+                        
+                        <!-- Columna 1: Hematología -->
+                        <div class="space-y-6 bg-red-50 p-4 rounded-lg border border-red-200">
                             <div>
-                                <h3 class="text-lg font-semibold mb-3 text-rose-800">Serie Roja</h3>
+                                <h3 class="text-lg font-semibold mb-3 text-red-700">Serie Roja</h3> <!-- Changed to text-red-700 -->
                                 <div class="space-y-3">
-                                    <div><label for="hemoglobina" class="text-sm font-medium text-gray-700">Hemoglobina (g/dL)</label><input type="text" id="hemoglobina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="12-18"></div>
-                                    <div><label for="hematocrito" class="text-sm font-medium text-gray-700">Hematocrito (%)</label><input type="text" id="hematocrito" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="36-50"></div>
+                                    <div><label for="hemoglobina" class="text-sm font-medium text-gray-700">Hemoglobina (g/dL)</label><input type="text" id="hemoglobina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="12-18"></div>
+                                    <div><label for="hematocrito" class="text-sm font-medium text-gray-700">Hematocrito (%)</label><input type="text" id="hematocrito" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="36-50"></div>
+                                    <div><label for="hematies" class="text-sm font-medium text-gray-700">G. Rojos (x10⁶/µL)</label><input type="text" id="hematies" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="4.0-6.0"></div>
+                                    <div><label for="vcm" class="text-sm font-medium text-gray-700">VCM (fL)</label><input type="text" id="vcm" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="80-93"></div>
+                                    <div><label for="hcm" class="text-sm font-medium text-gray-700">HCM (pg)</label><input type="text" id="hcm" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="27-32"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="space-y-6">
+
+                        <!-- Columna 2: Serie Blanca & Coagulación -->
+                        <div class="space-y-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
                             <div>
-                                <h3 class="text-lg font-semibold mb-3 text-rose-800">Serie Blanca</h3>
+                                <h3 class="text-lg font-semibold mb-3 text-red-700">Serie Blanca</h3> <!-- Changed to text-red-700 -->
                                  <div class="space-y-3">
-                                    <div><label for="leucocitos" class="text-sm font-medium text-gray-700">Leucocitos (/mm³)</label><input type="text" id="leucocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="4k-11k"></div>
-                                    <div><label for="plaquetas" class="text-sm font-medium text-gray-700">Plaquetas (/mm³)</label><input type="text" id="plaquetas" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="150k-400k"></div>
+                                    <div><label for="leucocitos" class="text-sm font-medium text-gray-700">Leucocitos (/mm³)</label><input type="text" id="leucocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="4.000-11.000"></div>
+                                    <div><label for="neutrofilos" class="text-sm font-medium text-gray-700">Neutrófilos (%)</label><input type="text" id="neutrofilos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="45-75"></div>
+                                    <div><label for="linfocitos" class="text-sm font-medium text-gray-700">Linfocitos (%)</label><input type="text" id="linfocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="25-40"></div>
+                                    <div><label for="monocitos" class="text-sm font-medium text-gray-700">Monocitos (%)</label><input type="text" id="monocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="4-10"></div>
+                                    <div><label for="eosinofilos" class="text-sm font-medium text-gray-700">Eosinófilos (%)</label><input type="text" id="eosinofilos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="0-5"></div>
+                                    <div><label for="cayados" class="text-sm font-medium text-gray-700">Cayados (%)</label><input type="text" id="cayados" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="0-4"></div>
                                  </div>
                             </div>
                         </div>
-                        <div class="space-y-6">
+                        
+                        <!-- Columna 3: Química -->
+                        <div class="space-y-6 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                             <div>
-                                <h3 class="text-lg font-semibold mb-3 text-rose-800">Química</h3>
+                                <h3 class="text-lg font-semibold mb-3 text-red-700">Química y Coagulación</h3> <!-- Changed to text-red-700 -->
                                 <div class="space-y-3">
-                                    <div><label for="glicose" class="text-sm font-medium text-gray-700">Glucemia (mg/dL)</label><input type="text" id="glicose" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="70-125"></div>
-                                    <div><label for="creatinina" class="text-sm font-medium text-gray-700">Creatinina (mg/dL)</label><input type="text" id="creatinina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="0.6-1.4"></div>
-                                    <div><label for="ast_tgo" class="text-sm font-medium text-gray-700">AST/TGO (U/L)</label><input type="text" id="ast_tgo" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="10-40"></div>
+                                    <div><label for="glicose" class="text-sm font-medium text-gray-700">Glucemia (mg/dL)</label><input type="text" id="glicose" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="70-125"></div>
+                                    <div><label for="creatinina" class="text-sm font-medium text-gray-700">Creatinina (mg/dL)</label><input type="text" id="creatinina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="0.6-1.4"></div>
+                                    <div><label for="ast_tgo" class="text-sm font-medium text-gray-700">AST/TGO (U/L)</label><input type="text" id="ast_tgo" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="10-40"></div>
+                                    <div><label for="alt_tgp" class="text-sm font-medium text-gray-700">ALT/TGP (U/L)</label><input type="text" id="alt_tgp" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="10-40"></div>
+                                    <div><label for="plaquetas" class="text-sm font-medium text-gray-700">Plaquetas (/mm³)</label><input type="text" id="plaquetas" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="150k-400k"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="space-y-6">
+
+                        <!-- Columna 4: Enfermedades Regionales -->
+                        <div class="space-y-6 bg-purple-50 p-4 rounded-lg border border-purple-200">
                             <div>
-                                <h3 class="text-lg font-semibold mb-3 text-rose-800">Enf. Regionais</h3>
-                                <div class="space-y-3">
-                                     <div><label for="chagas_serologia" class="text-sm font-medium text-gray-700">Chagas Serologia</label><input type="text" id="chagas_serologia" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="Reactivo/Não"></div>
-                                     <div><label for="dengue_serologia" class="text-sm font-medium text-gray-700">Dengue NS1/IgM</label><input type="text" id="dengue_serologia" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500" placeholder="Positivo/Negativo"></div>
+                                <h3 class="text-lg font-semibold mb-3 text-red-700">Enf. Regionales</h3> <!-- Removed "(Bolivia)" and changed to text-red-700 -->
+                                <div class="bg-slate-50 p-4 rounded-lg space-y-4 border border-slate-200">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Chagas</h4>
+                                        <div class="space-y-3 mt-2">
+                                            <div><label for="chagas_micrometodo" class="text-sm font-medium text-gray-700">Micrométodo (RN)</label><input type="text" id="chagas_micrometodo" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="Positivo/Negativo"></div>
+                                            <div><label for="chagas_serologia_materna" class="text-sm font-medium text-gray-700">Serología Materna</label><input type="text" id="chagas_serologia_materna" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="Reactivo/No Reactivo"></div>
+                                            <div><label for="chagas_serologia_nino" class="text-sm font-medium text-gray-700">Serología Niño >6m</label><input type="text" id="chagas_serologia_nino" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="Título 1/128"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Dengue</h4>
+                                        <div class="space-y-3 mt-2">
+                                             <div><label for="dengue_pcr_ns1" class="text-sm font-medium text-gray-700">Antígeno NS1 / PCR</label><input type="text" id="dengue_pcr_ns1" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="Positivo/Negativo"></div>
+                                             <div><label for="dengue_serologia_igm" class="text-sm font-medium text-gray-700">Serología IgM</label><input type="text" id="dengue_serologia_igm" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="Reactivo/No Reactivo"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- New Row for additional parameters -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 mt-8">
+                        <!-- Columna 5: Gasometria -->
+                        <div class="space-y-6 bg-green-50 p-4 rounded-lg border border-green-200">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3 text-red-700">Gasometria</h3> <!-- Changed to text-red-700 -->
+                                <div class="space-y-3">
+                                    <div><label for="gasometria_ph" class="text-sm font-medium text-gray-700">pH</label><input type="text" id="gasometria_ph" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="7.35-7.45"></div>
+                                    <div><label for="gasometria_pco2" class="text-sm font-medium text-gray-700">pCO₂ (mmHg)</label><input type="text" id="gasometria_pco2" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="35-45"></div>
+                                    <div><label for="gasometria_hco3" class="text-sm font-medium text-gray-700">HCO₃⁻ (mmol/L)</label><input type="text" id="gasometria_hco3" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="21-28"></div>
+                                    <div><label for="gasometria_po2" class="text-sm font-medium text-gray-700">pO₂ (mmHg)</label><input type="text" id="gasometria_po2" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder=">60"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna 6: Perfil Hepático -->
+                        <div class="space-y-6 bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3 text-red-700">Perfil Hepático</h3> <!-- Changed to text-red-700 -->
+                                <div class="space-y-3">
+                                    <div><label for="bilirrubina_direta" class="text-sm font-medium text-gray-700">Bilirrubina Direta (mg/dL)</label><input type="text" id="bilirrubina_direta" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="até 0.4"></div>
+                                    <div><label for="bilirrubina_indireta" class="text-sm font-medium text-gray-700">Bilirrubina Indireta (mg/dL)</label><input type="text" id="bilirrubina_indireta" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="até 1.0"></div>
+                                    <div><label for="bilirrubina_total" class="text-sm font-medium text-gray-700">Bilirrubina Total (mg/dL)</label><input type="text" id="bilirrubina_total" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="até 1.5"></div>
+                                    <div><label for="albumina" class="text-sm font-medium text-gray-700">Albumina (g/dL)</label><input type="text" id="albumina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="3.5-4.8"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna 7: Eletrólitos -->
+                        <div class="space-y-6 bg-pink-50 p-4 rounded-lg border border-pink-200">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-3 text-red-700">Eletrólitos</h3> <!-- Changed to text-red-700 -->
+                                <div class="space-y-3">
+                                    <div><label for="eletrolitos_na" class="text-sm font-medium text-gray-700">Na+ (mEq/L)</label><input type="text" id="eletrolitos_na" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="135-145"></div>
+                                    <div><label for="eletrolitos_k" class="text-sm font-medium text-gray-700">K+ (mEq/L)</label><input type="text" id="eletrolitos_k" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="3.5-5.0"></div>
+                                    <div><label for="eletrolitos_cl" class="text-sm font-medium text-gray-700">Cl- (mEq/L)</label><input type="text" id="eletrolitos_cl" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="97-107"></div>
+                                    <div><label for="eletrolitos_ca" class="text-sm font-medium text-gray-700">Ca²+ (mg/dL)</label><input type="text" id="eletrolitos_ca" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="8.5-10.5"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="mt-6">
-                         <label for="outros_dados" class="block text-sm font-medium text-gray-700">Dados Clínicos e Contexto (Principal Diagnóstico Suspeito)</label>
-                         <textarea id="outros_dados" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 focus:ring-rose-500 focus:border-rose-500" placeholder="Ex: Paciente com suspeita de Fibrose Pulmonar Idiopática. Apresenta tosse seca e dispneia."></textarea>
+                            <label for="outros_dados" class="block text-sm font-medium text-gray-700">Otros datos relevantes (signos, síntomas, comorbilidades)</label>
+                           <textarea id="outros_dados" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-red-500 focus:border-red-500" placeholder="Ej: Paciente de 45 años, masculino, con fiebre hace 3 días y tos productiva. Residente de zona endémica para Chagas."></textarea>
                     </div>
                     
-                    <div id="action-buttons-container" class="mt-8 pt-6 border-t border-gray-200 flex justify-center flex-wrap gap-4">
-                        <button type="button" id="generate-report-btn" class="flex items-center justify-center bg-rose-800 hover:bg-rose-900 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-rose-300 disabled:opacity-50">
-                            Gerar Análise Profissional
+                    <div id="action-buttons-container" class="mt-8 pt-6 border-t border-gray-200 flex flex-col md:flex-row justify-center items-center gap-4">
+                        <button type="button" id="generate-report-btn" class="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-red-300">
+                            Generar Reporte
                         </button>
-                        <button type="button" id="install-app-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300" style="display: none;">
+                        <button type="button" id="print-report-btn" class="w-full md:w-auto bg-slate-600 hover:bg-slate-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-slate-300" style="display: none;">
+                            Imprimir Reporte
+                        </button>
+                        <button type="button" id="whatsapp-share-btn" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-300" style="display: none;">
+                            Compartir no WhatsApp
+                        </button>
+                           <button type="button" id="install-app-btn" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300" style="display: none;">
                             Instalar App
+                        </button>
+                        <button type="button" id="clear-form-btn" class="w-full md:w-auto bg-white hover:bg-gray-100 text-gray-700 font-bold py-2.5 px-6 rounded-lg shadow-md border border-gray-300 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-200">
+                            Limpiar Formulario
                         </button>
                     </div>
                 </form>
@@ -160,219 +230,565 @@
 
             <div id="loading-section" class="text-center my-10" style="display: none;">
                 <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-24 w-24 mx-auto"></div>
-                <p class="mt-4 text-lg text-gray-600">Analisando dados... Por favor, aguarde.</p>
+                <p class="mt-4 text-lg text-gray-600">Analizando datos... Por favor, espere.</p>
             </div>
             
-            <div id="error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-6" role="alert">
-                <p class="font-bold">Ocorreu um erro</p>
-                <p id="error-content">Não foi possível gerar a análise. Por favor, tente novamente.</p>
+            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative my-6" role="alert">
+                <strong class="font-bold">¡Ocurrió un error!</strong>
+                <span id="error-content" class="block sm:inline">No fue posible generar el reporte. Por favor, intente nuevamente.</span>
             </div>
 
             <!-- Seção do Relatório Gerado -->
             <div id="report-output" style="display: none;" class="mt-10 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">Folheto do Paciente</h2>
-                <div id="patient-handout-section" class="prose max-w-none text-gray-700"></div>
-                 <div class="mt-6 border-t pt-4 text-sm text-gray-500">
-                    <strong>Disclaimer:</strong> Este folheto é apenas para fins informativos gerais e não substitui o aconselhamento médico profissional.
-                 </div>
+                <!-- Abas de Navegação -->
+                <div class="tab-buttons-container border-b border-gray-200 mb-4">
+                    <nav class="tab-buttons -mb-px flex space-x-6" aria-label="Tabs">
+                        <button class="tab-btn active black-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" data-tab="tabla-resumen-section">Tabla Resumen</button>
+                        <button class="tab-btn inactive whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" data-tab="reporte-detallado-section">Reporte Detallado</button>
+                        <button class="tab-btn inactive whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" data-tab="diagnostico-diferencial-section">Diagnóstico Diferencial</button>
+                        <button class="tab-btn inactive whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" data-tab="explicacion-tecnica-section">Glosario Técnico</button>
+                        <button class="tab-btn inactive whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" data-tab="referencias-section">Referencias</button>
+                    </nav>
+                </div>
+                
+                <!-- Conteúdo das Abas -->
+                <div id="tabla-resumen-section" class="tab-content active">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Tabla Resumen</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-red-600"> <!-- Changed from teal-600 to red-600 -->
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Parámetro</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Valor</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Referencia</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Interpretación</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summary-table-body" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Removed "Para el Paciente" content section -->
+
+                <div id="reporte-detallado-section" class="tab-content">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Reporte Detallado (Técnico)</h2>
+                    <div id="reporte-detallado-content" class="space-y-4 prose max-w-none text-gray-700"></div>
+                </div>
+
+                <div id="diagnostico-diferencial-section" class="tab-content">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Diagnóstico Diferencial</h2>
+                    <div id="diagnostico-diferencial-content" class="prose max-w-none text-gray-700"></div>
+                </div>
+
+                <div id="explicacion-tecnica-section" class="tab-content">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Glosario y Explicación Técnica</h2>
+                    <div id="explicacion-tecnica-content" class="prose max-w-none text-gray-700"></div>
+                </div>
+                
+                <div id="referencias-section" class="tab-content">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Referencias</h2>
+                    <div id="referencias-content" class="prose max-w-none text-sm text-gray-600"></div>
+                </div>
             </div>
         </main>
-        
-        <footer id="main-footer" class="text-center mt-12 pt-8 border-t border-gray-200 text-sm text-gray-500 max-w-3xl mx-auto">
-            <p>&copy; 2024 Missionary Medical Care</p>
+
+        <footer id="main-footer" class="text-center mt-12 text-sm text-gray-500">
+            <p>Desenvolvido como uma ferramenta de apoio para profissionais em missão.</p>
+            <p>&copy; 2024. Todos os derechos reservados.</p>
+            <p class="mt-4 text-xs text-red-700">
+                As informações neste aplicativo não têm a intenção de ser aconselhamento profissional nem têm a intenção de substituir uma consulta pessoal com um médico, farmacêutico ou outro profissional de saúde qualificado. O leitor não deve desconsiderar aconselhamento médico nem adiar a busca por aconselhamento médico devido a alguma informação encontrada neste aplicativo.
+            </p>
         </footer>
     </div>
 
     <script type="module">
-        // --- Lógica PWA ---
+        // --- Registro do Service Worker para PWA ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => console.log('Service worker registered', reg))
-                .catch(err => console.log('Service worker not registered', err));
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('ServiceWorker registrado com sucesso: ', registration.scope);
+                }).catch(error => {
+                    console.log('Falha no registro do ServiceWorker: ', error);
+                });
             });
         }
-        let deferredPrompt;
+        
+        // --- Lógica para o botão de instalação ---
         const installBtn = document.getElementById('install-app-btn');
+        let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             installBtn.style.display = 'block';
         });
-        installBtn.addEventListener('click', (e) => {
-            installBtn.style.display = 'none';
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
                 deferredPrompt = null;
-            });
-        });
-
-        // --- Lógica da Aplicação ---
-        let fileBase64 = null;
-        let fileType = null;
-
-        const fileUploadInput = document.getElementById('file-upload');
-        const fileNameDisplay = document.getElementById('file-name-display');
-
-        fileUploadInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (!file) {
-                fileBase64 = null; fileType = null;
-                fileNameDisplay.textContent = "PNG, JPG até 10MB";
-                return;
+                installBtn.style.display = 'none';
             }
-            fileNameDisplay.textContent = `Ficheiro selecionado: ${file.name}`;
-            const reader = new FileReader();
-            reader.onload = () => {
-                fileBase64 = reader.result.split(',')[1];
-                fileType = file.type;
-            };
-            reader.readAsDataURL(file);
         });
 
+        // --- Lógica principal da aplicação ---
         const generateBtn = document.getElementById('generate-report-btn');
+        const printBtn = document.getElementById('print-report-btn');
+        const whatsappShareBtn = document.getElementById('whatsapp-share-btn');
+        const clearBtn = document.getElementById('clear-form-btn');
         const labForm = document.getElementById('lab-form');
+        
         const loadingSection = document.getElementById('loading-section');
         const errorMessage = document.getElementById('error-message');
         const reportOutput = document.getElementById('report-output');
 
+        const showSection = (section, show) => {
+            if (section) section.style.display = show ? 'block' : 'none';
+        };
+
         generateBtn.addEventListener('click', async () => {
-            const formInputs = Array.from(labForm.querySelectorAll('input[type="text"], textarea'));
-            const textData = formInputs.map(input => {
-                const label = labForm.querySelector(`label[for="${input.id}"]`);
-                return { id: label ? label.innerText : input.id, value: input.value };
-            }).filter(item => item.value.trim() !== '');
+            showSection(errorMessage, false);
+            showSection(reportOutput, false);
+            showSection(loadingSection, true);
+            showSection(printBtn, false);
+            showSection(whatsappShareBtn, false);
             
-            if (textData.length === 0 && !fileBase64) {
-                alert("Por favor, suba uma imagem ou preencha pelo menos um campo do formulário.");
-                return;
-            }
+            const labData = {
+                hemoglobina: document.getElementById('hemoglobina').value,
+                hematocrito: document.getElementById('hematocrito').value,
+                leucocitos: document.getElementById('leucocitos').value,
+                plaquetas: document.getElementById('plaquetas').value,
+                glicose: document.getElementById('glicose').value,
+                creatinina: document.getElementById('creatinina').value,
+                ast_tgo: document.getElementById('ast_tgo').value,
+                alt_tgp: document.getElementById('alt_tgp').value,
+                neutrofilos: document.getElementById('neutrofilos').value,
+                linfocitos: document.getElementById('linfocitos').value,
+                monocitos: document.getElementById('monocitos').value,
+                eosinofilos: document.getElementById('eosinofilos').value,
+                cayados: document.getElementById('cayados').value,
+                hematies: document.getElementById('hematies').value,
+                vcm: document.getElementById('vcm').value,
+                hcm: document.getElementById('hcm').value,
+                chagas_micrometodo: document.getElementById('chagas_micrometodo').value,
+                chagas_serologia_materna: document.getElementById('chagas_serologia_materna').value,
+                chagas_serologia_nino: document.getElementById('chagas_serologia_nino').value,
+                dengue_pcr_ns1: document.getElementById('dengue_pcr_ns1').value,
+                dengue_serologia_igm: document.getElementById('dengue_serologia_igm').value,
+                outros_dados: document.getElementById('outros_dados').value,
+                // New Gasometria parameters
+                gasometria_ph: document.getElementById('gasometria_ph').value,
+                gasometria_pco2: document.getElementById('gasometria_pco2').value,
+                gasometria_hco3: document.getElementById('gasometria_hco3').value,
+                gasometria_po2: document.getElementById('gasometria_po2').value,
+                // New Perfil Hepático parameters
+                bilirrubina_direta: document.getElementById('bilirrubina_direta').value,
+                bilirrubina_indireta: document.getElementById('bilirrubina_indireta').value,
+                bilirrubina_total: document.getElementById('bilirrubina_total').value,
+                albumina: document.getElementById('albumina').value,
+                // New Eletrólitos parameters
+                eletrolitos_na: document.getElementById('eletrolitos_na').value,
+                eletrolitos_k: document.getElementById('eletrolitos_k').value,
+                eletrolitos_cl: document.getElementById('eletrolitos_cl').value,
+                eletrolitos_ca: document.getElementById('eletrolitos_ca').value,
+            };
 
-            loadingSection.style.display = 'block';
-            reportOutput.style.display = 'none';
-            errorMessage.style.display = 'none';
+            const dataString = Object.entries(labData)
+                .filter(([_, value]) => value && value.trim() !== '')
+                .map(([key, value]) => `- ${key.replace(/_/g, ' ')}: ${value}`)
+                .join('\n');
             
-            generateBtn.disabled = true;
-            generateBtn.innerHTML = `<div class="loader-small"></div><span class="ml-2">Analisando...</span>`;
+            const referenceText = `
+                ### HEMATOLOGÍA GENERAL
+                - HEMOGLOBINA (Hb) 12-18 g/dl: > Leucocitosis, hiperlipidemia, fumadores, hemoconcentración, policitemia. | < ANEMIA: Déficit de hierro, aplasia medular, déficit de B12, hemólisis, hemorragias.
+                - HEMATOCRITO (Ht) 36-50%: > Hemoconcentración, policitemia. | < ANEMIA, hemodilución.
+                - LEUCOCITOS 4k-11k/mm³: > Leucocitosis: Infección, inflamación, leucemias. | < Leucopenia: Dengue, quimio, sepsis, autoinmune.
+                - PLAQUETAS 150k-400k/mm³: > Trombocitosis: Reactiva a infección/inflamación, neoplasia. | < Trombocitopenia: Dengue, PTI, Lupus, fármacos, hiperesplenismo.
+                ### BIOQUÍMICA GENERAL
+                - CREATININA 0.6-1.4 mg/dl: > Insuficiencia Renal, < TFG.
+                - TGO/AST 10-40 U/L: > Daño hepático, pancreatitis aguda, IAM, cirrose, alcoholismo, rabdomiólisis.
+                - TGP/ALT 10-40 U/L: > Hepatitis (aguda, viral), autoinmune, fármacos. Es más específica del hígado.
+                ### ANÁLISIS ESPECÍFICO
+                #### CHAGAS
+                - Diagnóstico en RN (0-6 meses): MICROMÉTODO. Positivo confirma Chagas Congénito.
+                - Diagnóstico en Niño >6m: SEROLOGÍA (HAI/ELISA). Positivo confirma Chagas Congénito.
+                - Serología Materna Reactiva: Indica que la madre tiene Chagas.
+                #### DENGUE
+                - Signos de Alarma: Dolor abdominal, vómitos persistentes, sangrado de mucosas, aumento del hematocrito con caída de plaquetas.
+                - Diagnóstico Agudo (1-5 días): Antígeno NS1 o RT-PCR.
+                - Diagnóstico Convaleciente (>5 días): Serología IgM.
+                ### GASOMETRIA
+                Guia Estruturado para Análise de Gasometria Arterial
+                1. Interprete o pH:
+                pH < 7,35: Acidose
+                pH > 7,45: Alcalose
+                pH 7,35-7,45: Normal (pode haver distúrbio compensado)
+                2. Identifique o Distúrbio Primário (Respiratório ou Metabólico):
+                Acidose
+                pCO₂ > 45 mmHg: Acidose respiratória
+                HCO₃⁻ < 22 mmol/L: Acidose metabólica
+                Alcalose
+                pCO₂ < 35 mmHg: Alcalose respiratória
+                HCO₃⁻ > 26 mmol/L: Alcalose metabólica
+                3. Compensação
+                Verifique se há compensação esperada ou distúrbio misto.
+                Se a alteração no pCO₂ ou HCO₃⁻ não “acompanha” a alteração do pH, pense em distúrbio misto.
+                4. Analise pO₂
+                pO₂ > 60 mmHg: Normal
+                pO₂ < 60 mmHg: Hipoxemia – pesquisar causas pulmonares, circulatórias ou ventilatórias
+                Algoritmo Resumido para Análise
+                Olhe primeiro o pH
+                Acidose (< 7,35) ou alcalose (> 7,45)?
+                Veja quem é o “culpado”:
+                pCO₂ alterado → distúrbio respiratório
+                HCO₃⁻ alterado → distúrbio metabólico
+                Causas Comuns dos Distúrbios
+                Acidose Metabólica
+                Cetoacidose (DM, álcool, jejum, desnutrição)
+                Acidose lática (hipóxia, choque, convulsão, drogas)
+                Insuficiência renal
+                Perda gastrointestinal de HCO₃⁻ (diarreia, fístulas)
+                Perda renal de HCO₃⁻ (acetazolamida, ac. tubular renal)
+                Intoxicações (ferro, cianeto, CO, biguanidas)
+                Rabdomiólise, hipoaldosteronismo, hiperpotassemia
+                Acidose Respiratória
+                Hipoventilação, DPOC, asma grave, depressão do SNC, corpo estranho, doenças neuromusculares
+                Alcalose Metabólica
+                Vômitos, aspiração gástrica, diuréticos, hipopotassemia, perda de H⁺ ou Cl⁻ gastrointestinal
+                Alcalose Respiratória
+                Hiperventilação, ansiedade, dor, febre, hipóxia, doenças do SNC
+                Parâmetros de Normalidade
+                pH: 7,35-7,45
+                pCO₂: 35-45 mmHg
+                HCO₃⁻: 21-28 mmol/L
+                pO₂: >60 mmHg
+                Quadro-resumo prático
+                DistúrbiopHpCO₂HCO₃⁻Exemplo de causaAcidose metabólica<7,35↓/N<21Cetoacidose, insuf. renalAcidose respiratória<7,35>45↑/NDPOC, hipoventilaçãoAlcalose metabólica>7,45↑/N>28Vômitos, diuréticosAlcalose respiratória>7,45<35↓/NAnsiedade, hipóxiaPassos detalhados para análise:
+                Verifique o pH: acidemia ou alcalemia?
+                Identifique o distúrbio primário: olhe pCO₂ e HCO₃⁻.
+                Veja se há compensação adequada.
+                Investigue hipóxia (pO₂ < 60 mmHg).
+                Considere causas clínicas e quadro do paciente.
+                ### PERFIL HEPATICO
+                Análise de Função Hepática – Parâmetros Principais
+                1. Bilirrubina Direta (Conjugada)
+                Valor normal: até 0,4 mg/dL
+                Se elevada:
+                + FA/GGT aumentadas + USG sem dilatação de vias biliares
+                → Colestase intra-hepática
+                Causas: cirrose biliar, medicamentos (colestase medicamentosa), hepatocarcinoma.
+                + FA/GGT aumentadas + USG com dilatação de vias biliares
+                → Colestase extra-hepática
+                Causas: coledocolitíase, neoplasias (cabeça de pâncreas, via biliar).
+                + AST/ALT aumentadas
+                → Lesão hepatocelular
+                Causas: hepatites virais, medicamentosas, dano hepático tardio, febre amarela, uso crônico de álcool.
+                2. Bilirrubina Indireta (Não Conjugada)
+                Valor normal: até 1,0 mg/dL
+                Se elevada:
+                Causas: hemólise (intravascular/extravascular), sepsis, insuficiência cardíaca (congestiva), hipovolemia, deficiência de ácido fólico ou vitamina B12, cirrose hepática, hepatite tóxica, icterícia do embarazo.
+                3. Bilirrubina Total
+                Valor normal: até 1,5 mg/dL
+                Se elevada:
+                Causas: dano hepático tóxico ou neoplásico, doenças hemolíticas, colestase, hemólise intravascular, cirrose, insuficiência cardíaca, litíase dos ductos biliares, colangite, carcinoma de pâncreas.
+                4. Albumina
+                Valor normal: 3,5 – 4,8 g/dL
+                Se diminuída (hipoalbuminemia):
+                Interferentes laboratoriais: ampicilina, heparina, hemoglobina, lipemia.
+                Causas clínicas: lesão hepática (cirrose, hepatite alcoólica), desnutrição, neoplasias, síndrome nefrótica, dieta vegana restrita, uso de ACO, estrógenos, aspirina, penicilina, aumento da bilirrubina.
+                Importante:
+                Hipoalbuminemia associada a INR/TTPA aumentados → sinal de insuficiência hepática global!
+                Resumo para consulta rápida:
+                ParâmetroValor normalInterpretação/AlteraçõesPrincipais CausasBilirrubina Diretaaté 0,4 mg/dLElevação + FA/GGT +/– dilatação VB por USGColestase intra/extra-hepática, hepatites, cirrose, tumoresBilirrubina Indiretaaté 1,0 mg/dLElevaçãoHemólise, IC, hepatite tóxica, cirrose, gravidezBilirrubina Totalaté 1,5 mg/dLElevaçãoHepatopatia, colestase, hemólise, CA pâncreas, colangite, cirroseAlbumina3,5-4,8 g/dLDiminuição (hipoalbuminemia)Cirrose, neoplasia, Sd. nefrótica, desnutrição, hepatite alcoólicaDICA PRÁTICA:
 
-            let promptParts = [];
-            let mainPrompt = `
-                Aja como um médico especialista escrevendo um "Folheto do Paciente" claro e empático.
-                Com base nos dados laboratoriais, de imagem e clínicos fornecidos, identifique o diagnóstico principal (ou o mais provável).
-                Em seguida, gere um folheto informativo sobre essa condição, seguindo EXATAMENTE a estrutura do schema JSON.
-                O idioma deve ser português.
+                AST/ALT predominantemente elevadas = lesão hepatocelular
+                FA/GGT predominantemente elevadas = colestase
+                Hipoalbuminemia + aumento INR = falência hepática
+                ### ELECTROLITOS
+                Parâmetros de Eletrólitos – Interpretação Clínica
+                EletrólitoValor NormalAlteraçãoPrincipais Causas de Aumento (>)Principais Causas de Redução (<)Na+135 – 145 mEq/LHipernatremiaDesidratação grave (perda de água), vômitos, diarreia, queimaduras extensas, traumas muscularesHiponatremia- Perda extrema de urina (DM), ac. metabólica, diarreia, uso de diuréticosK+3,5 – 5,0 mEq/LHipercalemiaDoença renal crônica, uremia extrarrenal, choque transfusional, ICCHipocalemia- Perdas excessivas (urinárias/GI), edema, taquicardia, PCR, irritabilidade muscularCl-97 – 107 mEq/LHipercloremiaDieta rica em sal, ac. metabólica (perda de HCO₃⁻), intoxicação por salicilatos, síndrome nefróticaHipocloremia- Vômitos repetidos, diarreia, sudorese profusa, pneumonia lobar, queimaduras extensas, diuréticosCa²+8,5 – 10,5 mg/dLHipercalcemiaHiperparatireoidismo, neoplasias ósseas, intoxicação por vit. D, uso de estrógenos, tiazídicos, teofilina, lítio, sarcoidose, CushingHipocalcemia- Doença celíaca, hipoparatireoidismo, deficiência de vit. C, pancreatite aguda, anticonvulsivantes (barbitúricos/hidantoinatos)Como analisar no contexto clínico:
+                Na+
+                > 145: Sempre pensar em perdas de água, situações catabólicas ou déficit de reposição.
+                < 135: Investigar perdas urinárias (diuréticos, DM), perdas digestivas (diarreia/vômitos) ou diluição (SIADH, ICC, insuficiência renal).
+                K+
+                > 5,0: Suspeitar de insuficiência renal, lesão tecidual extensa ou medicamentos.
+                < 3,5: Perdas digestivas ou urinárias; atenção ao risco de arritmias!
+                Cl-
+                > 107: Costuma acompanhar acidose metabólica e hipernatremia; investigar causas renais e não-renais.
+                < 97: Frequentemente associado a vômitos, perda de ácido gástrico, ou uso abusivo de diuréticos.
+                Ca²+:
+                > 10,5: Causas principais são doenças ósseas, tumores, hiperparatireoidismo.
+                < 8,5: Atentar para distúrbios endócrinos, má absorção e drogas.
+                DICA:
 
-                **Estrutura do Folheto:**
-                - **O que é?** Uma definição clara e simples da doença.
-                - **Sinais/Sintomas Comuns:** Liste os sintomas mais típicos.
-                - **Causas ou Fatores de Risco:** Explique as possíveis causas ou fatores que aumentam o risco.
-                - **Possíveis Complicações:** Descreva as complicações que podem surgir.
-                - **Opções de Tratamento:** Apresente as abordagens de tratamento de forma geral.
-                - **Quando Procurar Ajuda:** Dê orientações claras sobre quando o paciente deve procurar atendimento médico.
-                
-                O texto deve ser educativo e tranquilizador, evitando jargões técnicos excessivos.
-
-                **Dados Fornecidos para Análise:**
+                Sempre correlacionar os distúrbios eletrolíticos com quadro clínico, volume urinário, função renal e uso de medicamentos!
             `;
+            
+            const promptText = `
+Actúa como un médico especialista en patología clínica. Analiza los siguientes resultados de laboratorio y datos clínicos.
+Usa tu conocimiento y, FUNDAMENTALMENTE, la base de referencia que te proporciono para guiar tu interpretación. El reporte debe ser en español.
 
-             promptParts.push({ text: mainPrompt });
+## Datos del Paciente:
+${dataString}
 
-            if (fileBase64) {
-                promptParts.push({ text: "Imagem do Exame:" });
-                promptParts.push({ inline_data: { mime_type: fileType, data: fileBase64 } });
-            }
+## Base de Conocimiento de Referência:
+${referenceText}
 
-            if (textData.length > 0) {
-                const textInputString = textData.map(item => `- ${item.id}: ${item.value}`).join('\n');
-                promptParts.push({ text: `\n\nDados Manuais e Clínicos:\n${textInputString}`});
-            }
+## Formato de Saída (JSON):
+
+Seu objeto JSON DEVE conter as seguintes chaves e estruturas, preenchendo-as com sua análise ou com os textos exatos solicitados.
+
+1.  **"tablaResumen"**: Um ARRAY de objetos. Cada objeto deve ter as chaves "parametro", "valor", "referencia", "interpretacion".
+
+2.  **"reporteDetallado"**: Um OBJECT com as seguintes chaves, que representam a "Avaliação e Planejamento". Gere o conteúdo para cada campo com base nos dados fornecidos do paciente e na base de conhecimento. Se um campo não puder ser preenchido com base nos dados, deixe-o em branco ou indique "Não aplicável".
+    * **"impressaoClinica"**: STRING - Sua avaliação clínica inicial e impressão geral do caso.
+    * **"doencaPulmonar"**: OBJECT - Análise e planos para problemas pulmonares.
+        * **"titulo"**: STRING - Use "Doença Pulmonar Intersticial vs. Malignidade Pulmonar".
+        * **"dx"**: STRING - Diagnósticos (Dx) sugeridos para este problema.
+        * **"tx"**: STRING - Tratamentos (Tx) ou manejos sugeridos para este problema.
+    * **"hipoxemia"**: OBJECT - Análise e planos para hipoxemia.
+        * **"titulo"**: STRING - Use "Hipoxemia".
+        * **"dx"**: STRING - Diagnósticos (Dx) sugeridos para este problema.
+        * **"tx"**: STRING - Tratamentos (Tx) ou manejos sugeridos para este problema.
+    * **"problemasCronicos"**: OBJECT - Análise e planos para problemas crônicos.
+        * **"hiperlipidemia"**: STRING - Análise e conduta para Hiperlipidemia.
+        * **"profilaxiaTVP"**: STRING - Análise e conduta para Profilaxia TVP.
+    * **"interpretacionIntegrada"**: STRING - Uma interpretação abrangente dos achados (se aplicável).
+    * **"alertas"**: STRING - Sinais de alerta importantes (se aplicável).
+    * **"hipotesis"**: STRING - Hipóteses diagnósticas mais prováveis (se aplicável).
+    * **"causas"**: STRING - Causas possíveis, estritamente baseadas na "Base de Conhecimento de Referência" fornecida (se aplicável).
+
+3.  **"explicacionTecnica"**: Uma STRING para o glossário técnico, como nas versões anteriores.
+
+4.  **"diagnosticoDiferencialCompleto"**: Uma STRING que contenha a discussão de caso e os diagnósticos diferenciais. Esta seção DEVE ser gerada SOMENTE com base nos 'Dados do Paciente' e na 'Base de Conhecimento de Referência' fornecidos. Se os dados forem insuficientes para uma discussão detalhada, declare claramente 'Dados insuficientes para um diagnóstico diferencial detalhado com base nos exames de laboratório fornecidos.' Não invente informações ou cenários clínicos não suportados pelos dados presentes.
+
+5.  **"referencias"**: Uma STRING contendo o texto das referências fornecidas.
+`;
 
             const schema = {
                 type: "OBJECT",
                 properties: {
-                    patientHandout: {
+                    tablaResumen: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                parametro: { type: "STRING" },
+                                valor: { type: "STRING" },
+                                referencia: { type: "STRING" },
+                                interpretacion: { type: "STRING" }
+                            },
+                            required: ["parametro", "valor", "referencia", "interpretacion"]
+                        }
+                    },
+                    reporteDetallado: { // New structure for reporteDetallado
                         type: "OBJECT",
                         properties: {
-                            diseaseName: { type: "STRING", description: "Nome da doença principal identificada." },
-                            whatIsIt: { type: "STRING", description: "Definição da doença." },
-                            commonSymptoms: { type: "STRING", description: "Sinais e sintomas comuns." },
-                            riskFactors: { type: "STRING", description: "Causas ou fatores de risco." },
-                            complications: { type: "STRING", description: "Possíveis complicações." },
-                            treatmentOptions: { type: "STRING", description: "Opções de tratamento." },
-                            whenToSeekHelp: { type: "STRING", description: "Quando procurar ajuda médica." }
+                            impressaoClinica: { type: "STRING" },
+                            doencaPulmonar: {
+                                type: "OBJECT",
+                                properties: {
+                                    titulo: { type: "STRING" },
+                                    dx: { type: "STRING" },
+                                    tx: { type: "STRING" }
+                                },
+                                required: ["titulo", "dx", "tx"]
+                            },
+                            hipoxemia: {
+                                type: "OBJECT",
+                                properties: {
+                                    titulo: { type: "STRING" },
+                                    dx: { type: "STRING" },
+                                    tx: { type: "STRING" }
+                                },
+                                required: ["titulo", "dx", "tx"]
+                            },
+                            problemasCronicos: {
+                                type: "OBJECT",
+                                properties: {
+                                    hiperlipidemia: { type: "STRING" },
+                                    profilaxiaTVP: { type: "STRING" }
+                                },
+                                required: ["hiperlipidemia", "profilaxiaTVP"]
+                            },
+                            interpretacionIntegrada: { type: "STRING" }, // Kept for general interpretation
+                            alertas: { type: "STRING" }, // Kept for general alerts
+                            hipotesis: { type: "STRING" }, // Kept for general hypothesis
+                            causas: { type: "STRING" } // Kept for general causes based on reference
                         },
-                        required: ["diseaseName", "whatIsIt", "commonSymptoms", "riskFactors", "complications", "treatmentOptions", "whenToSeekHelp"]
-                    }
+                        required: ["impressaoClinica", "doencaPulmonar", "hipoxemia", "problemasCronicos", "interpretacionIntegrada", "alertas", "hipotesis", "causas"]
+                    },
+                    explicacionTecnica: { type: "STRING" },
+                    diagnosticoDiferencialCompleto: { type: "STRING" }, // Now a string directly from LLM
+                    referencias: { type: "STRING" }
                 },
-                required: ["patientHandout"]
+                required: ["tablaResumen", "reporteDetallado", "explicacionTecnica", "diagnosticoDiferencialCompleto", "referencias"]
             };
 
             try {
-                const apiKey = "AIzaSyBSwG0EMH7kvf7DLo4j280wb42uaWmp_ZA"; 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                const payload = { contents: [{ parts: promptParts }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
+                const apiKey = "AIzaSyBSwG0EMH7kvf7DLo4j280wb42uaWmp_ZA"; // API Key inserida diretamente
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`; // URL com a chave da API
+                const payload = { contents: [{ role: "user", parts: [{ text: promptText }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-
                 if (!response.ok) {
-                    const errorBody = await response.json().catch(() => null);
-                    throw new Error(errorBody?.error?.message || `Error de API: ${response.status}`);
+                    let errorMsg = `Error de API: ${response.status}.`;
+                    try {
+                        const errorBody = await response.json();
+                        errorMsg = errorBody.error?.message || JSON.stringify(errorBody);
+                    } catch (e) { errorMsg += ' No se pudo obtener más detalhes del error.'; }
+                    throw new Error(errorMsg);
                 }
                 const result = await response.json();
-                if (result.candidates && result.candidates[0].content) {
+                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts) {
                     const reportData = JSON.parse(result.candidates[0].content.parts[0].text);
                     displayReport(reportData);
                 } else {
-                     throw new Error("Resposta da API inválida.");
+                    throw new Error("La respuesta de la API fue inválida o vacía.");
                 }
             } catch (error) {
                 console.error("Error al generar reporte:", error);
-                const errorContent = document.getElementById('error-content');
-                if (error.message && error.message.toLowerCase().includes('overloaded')) {
-                    errorContent.textContent = "O servidor de análise está sobrecarregado no momento. Por favor, aguarde alguns instantes e tente novamente.";
-                } else {
-                    errorContent.textContent = error.message;
-                }
-                errorMessage.style.display = 'block';
+                document.getElementById('error-content').textContent = error.message;
+                showSection(errorMessage, true);
             } finally {
-                loadingSection.style.display = 'none';
-                generateBtn.disabled = false;
-                generateBtn.innerHTML = 'Gerar Análise Profissional';
+                showSection(loadingSection, false);
             }
         });
 
-        function displayReport(data) {
-            const handout = data.patientHandout;
-            const handoutContainer = document.getElementById('patient-handout-section');
+        clearBtn.addEventListener('click', () => {
+            labForm.reset();
+            showSection(reportOutput, false);
+            showSection(printBtn, false);
+            showSection(whatsappShareBtn, false); // Ocultar botão de compartilhamento no WhatsApp
+            window.scrollTo(0, 0);
+        });
+        
+        printBtn.addEventListener('click', () => { window.print(); });
 
-            if (!handout) {
-                handoutContainer.innerHTML = `<p>Não foi possível gerar o folheto informativo com os dados fornecidos.</p>`;
-                reportOutput.style.display = 'block';
-                return;
+        // Função de compartilhamento no WhatsApp
+        whatsappShareBtn.addEventListener('click', () => {
+            const reportContent = document.getElementById('reporte-detallado-content').innerText;
+            const message = encodeURIComponent(`Aquí está un resumen de su reporte de laboratorio:\n\n${reportContent}\n\nGenerado por MISSIONARY MEDICAL CARE.`);
+            const whatsappUrl = `https://wa.me/?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        });
+
+
+        // Lógica das Abas (Tabs)
+        const tabs = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Define an array of colors to cycle through
+        const tabColors = ['black-tab', 'red-tab', 'black-tab', 'red-tab', 'black-tab']; // Updated for 5 tabs
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.dataset.tab;
+                const target = document.getElementById(targetId);
+
+                tabs.forEach((t) => {
+                    t.classList.remove('active', 'black-tab', 'red-tab');
+                    t.classList.add('inactive'); // Add inactive class for default styling
+                });
+
+                // Apply active class and correct color based on index
+                tab.classList.add('active', tabColors[index % tabColors.length]); // Cycle through colors
+                tab.classList.remove('inactive'); // Remove inactive class when active
+                
+                tabContents.forEach(c => c.classList.remove('active'));
+                target.classList.add('active');
+            });
+        });
+
+        function displayReport(data) {
+            const tableBody = document.getElementById('summary-table-body');
+            tableBody.innerHTML = '';
+            if (data.tablaResumen) {
+                data.tablaResumen.forEach((item, index) => {
+                    const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+                    let valueClass = 'text-gray-900';
+                    const interp = item.interpretacion.toLowerCase();
+                    if (interp.includes('alto') || interp.includes('aumentado') || interp.includes('elevado') || interp.includes('positiv') || interp.includes('reactivo') || interp.includes('>')) {
+                        valueClass = 'text-red-600 font-semibold';
+                    } else if (interp.includes('bajo') || interp.includes('disminuido') || interp.includes('<')) {
+                        valueClass = 'text-blue-600 font-semibold';
+                    }
+                    const row = `<tr class="${bgColor}">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.parametro}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm ${valueClass}">${item.valor}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.referencia}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${item.interpretacion}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
             }
 
-            handoutContainer.innerHTML = `
-                <h3 class="!text-2xl !font-bold !text-gray-900">${handout.diseaseName}</h3>
-                
-                <h3>O que é?</h3>
-                <p>${handout.whatIsIt}</p>
+            // "Para el Paciente" content is removed from here
 
-                <h3>Sinais/sintomas comuns</h3>
-                <p>${handout.commonSymptoms}</p>
-
-                <h3>Causas ou fatores de risco</h3>
-                <p>${handout.riskFactors}</p>
-
-                <h3>Possíveis complicações</h3>
-                <p>${handout.complications}</p>
-
-                <h3>Opções de tratamento</h3>
-                <p>${handout.treatmentOptions}</p>
-
-                <h3>Quando procurar ajuda</h3>
-                <p>${handout.whenToSeekHelp}</p>
-            `;
+            // Populate "Reporte Detallado" content with new structure
+            const reporteDetallado = data.reporteDetallado || {};
+            let detailedReportHtml = '';
             
-            reportOutput.style.display = 'block';
-            reportOutput.scrollIntoView({ behavior: 'smooth' });
+            if (reporteDetallado.impressaoClinica) {
+                detailedReportHtml += `<h3 class="text-lg font-semibold text-gray-800">Impressão Clínica:</h3><p>${(reporteDetallado.impressaoClinica || '').replace(/\n/g, '<br>')}</p>`;
+            }
+
+            if (reporteDetallado.doencaPulmonar) {
+                detailedReportHtml += `<h3 class="text-lg font-semibold text-gray-800">${reporteDetallado.doencaPulmonar.titulo}:</h3>`;
+                detailedReportHtml += `<h4 class="font-semibold text-gray-800">Dx:</h4><p>${(reporteDetallado.doencaPulmonar.dx || '').replace(/\n/g, '<br>')}</p>`;
+                detailedReportHtml += `<h4 class="font-semibold text-gray-800">Tx:</h4><p>${(reporteDetallado.doencaPulmonar.tx || '').replace(/\n/g, '<br>')}</p>`;
+            }
+
+            if (reporteDetallado.hipoxemia) {
+                detailedReportHtml += `<h3 class="text-lg font-semibold text-gray-800">${reporteDetallado.hipoxemia.titulo}:</h3>`;
+                detailedReportHtml += `<h4 class="font-semibold text-gray-800">Dx:</h4><p>${(reporteDetallado.hipoxemia.dx || '').replace(/\n/g, '<br>')}</p>`;
+                detailedReportHtml += `<h4 class="font-semibold text-gray-800">Tx:</h4><p>${(reporteDetallado.hipoxemia.tx || '').replace(/\n/g, '<br>')}</p>`;
+            }
+
+            if (reporteDetallado.problemasCronicos) {
+                detailedReportHtml += `<h3 class="text-lg font-semibold text-gray-800">Problemas Crônicos:</h3>`;
+                detailedReportHtml += `<h4 class="font-semibold text-gray-800">Hiperlipidemia:</h4><p>${(reporteDetallado.problemasCronicos.hiperlipidemia || '').replace(/\n/g, '<br>')}</p>`;
+                detailedReportHtml += `<h4 class="font-semibold text-gray-800">Profilaxia TVP:</h4><p>${(reporteDetallado.problemasCronicos.profilaxiaTVP || '').replace(/\n/g, '<br>')}</p>`;
+            }
+            // Retained general interpretation, alerts, hypothesis, and causes as they are useful general fields
+            if (reporteDetallado.interpretacionIntegrada) {
+                detailedReportHtml += `<h3 class="text-lg font-semibold text-gray-800">Interpretación Integrada:</h3><p>${(reporteDetallado.interpretacionIntegrada || '').replace(/\n/g, '<br>')}</p>`;
+            }
+            if (reporteDetallado.alertas) {
+                detailedReportHtml += `<h3 class="text-lg font-semibold text-gray-800">Señales de Alerta:</h3><p>${(reporteDetallado.alertas || '').replace(/\n/g, '<br>')}</p>`;
+            }
+            if (reporteDetallado.hipotesis) {
+                detailedReportHtml += `<h3 class="text-lg font-semibold text-gray-800">Hipótesis Diagnósticas:</h3><p>${(reporteDetallado.hipotesis || '').replace(/\n/g, '<br>')}</p>`;
+            }
+            if (reporteDetallado.causas) {
+                detailedReportHtml += `<h3 class="text-lg font-semibold text-gray-800">Causas Posibles (según referencia):</h3><p>${(reporteDetallado.causas || '').replace(/\n/g, '<br>')}</p>`;
+            }
+
+            document.getElementById('reporte-detallado-content').innerHTML = detailedReportHtml;
+
+            // Populate "Diagnóstico Diferencial" content directly
+            document.getElementById('diagnostico-diferencial-content').innerHTML = `<p>${(data.diagnosticoDiferencialCompleto || '').replace(/\n/g, '</p><p>')}</p>`;
+
+
+            document.getElementById('explicacion-tecnica-content').innerHTML = `<p>${(data.explicacionTecnica || '').replace(/\n/g, '</p><p>')}</p>`;
+            document.getElementById('referencias-content').innerHTML = `<p>${(data.referencias || '').replace(/\n/g, '<br>')}</p>`;
+
+            // Reset tabs to the first one with alternating colors
+            document.querySelectorAll('.tab-btn').forEach((btn, index) => {
+                btn.classList.remove('active', 'black-tab', 'red-tab');
+                btn.classList.add('inactive');
+            });
+            // Set the first tab as active and apply its corresponding color
+            tabs[0].classList.add('active', tabColors[0]);
+            tabs[0].classList.remove('inactive');
+
+            document.querySelectorAll('.tab-content').forEach((content, index) => {
+                content.classList.toggle('active', index === 0);
+            });
+
+            showSection(reportOutput, true);
+            showSection(printBtn, true);
+            showSection(whatsappShareBtn, true); // Mostrar botão de compartilhamento no WhatsApp
+            document.getElementById('report-output').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
