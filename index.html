@@ -44,7 +44,6 @@
             padding: 1rem;
             border-radius: 0.25rem;
         }
-        /* Estilos para o Folheto do Paciente */
         .patient-handout h3 {
             font-size: 1.125rem; /* text-lg */
             font-weight: 700; /* font-bold */
@@ -65,6 +64,31 @@
             margin-top: 1.5rem;
             padding-top: 0.75rem;
             border-top: 1px solid #e5e7eb; /* border-gray-200 */
+        }
+        /* Estilos para impressão */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #report-output, #report-output * {
+                visibility: visible;
+            }
+            #report-output {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .tab-buttons, #report-actions {
+                display: none !important;
+            }
+            .tab-content.active {
+                display: block !important;
+                margin-top: -50px; /* Ajuste para compensar a ausência das abas */
+            }
+             .tab-content {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -92,10 +116,10 @@
                     <div class="space-y-6">
                         
                         <div class="exam-group border-red-200">
-                            <h3 class="text-lg font-semibold mb-3 text-red-800">Serie Roja</h3>
+                            <h3 class="text-lg font-semibold mb-3 text-red-800">Série Vermelha</h3>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                 <div><label for="hemoglobina" class="text-sm font-medium text-gray-700">Hemoglobina (g/dL)</label><input type="text" id="hemoglobina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="hematocrito" class="text-sm font-medium text-gray-700">Hematocrito (%)</label><input type="text" id="hematocrito" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
+                                <div><label for="hematocrito" class="text-sm font-medium text-gray-700">Hematócrito (%)</label><input type="text" id="hematocrito" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="g_rojos" class="text-sm font-medium text-gray-700">G. Rojos (x10⁶/µL)</label><input type="text" id="g_rojos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="vcm" class="text-sm font-medium text-gray-700">VCM (fL)</label><input type="text" id="vcm" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="hcm" class="text-sm font-medium text-gray-700">HCM (pg)</label><input type="text" id="hcm" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
@@ -103,12 +127,12 @@
                         </div>
 
                         <div class="exam-group border-blue-200">
-                            <h3 class="text-lg font-semibold mb-3 text-blue-800">Serie Blanca</h3>
+                            <h3 class="text-lg font-semibold mb-3 text-blue-800">Série Branca</h3>
                              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                <div><label for="leucocitos" class="text-sm font-medium text-gray-700">Leucocitos (/mm³)</label><input type="text" id="leucocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
+                                <div><label for="leucocitos" class="text-sm font-medium text-gray-700">Leucócitos (/mm³)</label><input type="text" id="leucocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="neutrofilos" class="text-sm font-medium text-gray-700">Neutrófilos (%)</label><input type="text" id="neutrofilos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="linfocitos" class="text-sm font-medium text-gray-700">Linfocitos (%)</label><input type="text" id="linfocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="monocitos" class="text-sm font-medium text-gray-700">Monocitos (%)</label><input type="text" id="monocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
+                                <div><label for="linfocitos" class="text-sm font-medium text-gray-700">Linfócitos (%)</label><input type="text" id="linfocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
+                                <div><label for="monocitos" class="text-sm font-medium text-gray-700">Monócitos (%)</label><input type="text" id="monocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="eosinofilos" class="text-sm font-medium text-gray-700">Eosinófilos (%)</label><input type="text" id="eosinofilos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="cayados" class="text-sm font-medium text-gray-700">Cayados (%)</label><input type="text" id="cayados" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="plaquetas" class="text-sm font-medium text-gray-700">Plaquetas (/mm³)</label><input type="text" id="plaquetas" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
@@ -118,7 +142,7 @@
                          <div class="exam-group border-yellow-200">
                             <h3 class="text-lg font-semibold mb-3 text-yellow-800">Perfil Hepático & Química</h3>
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                <div><label for="glicose" class="text-sm font-medium text-gray-700">Glucemia (mg/dL)</label><input type="text" id="glicose" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
+                                <div><label for="glicose" class="text-sm font-medium text-gray-700">Glicemia (mg/dL)</label><input type="text" id="glicose" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="creatinina" class="text-sm font-medium text-gray-700">Creatinina (mg/dL)</label><input type="text" id="creatinina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="ast_tgo" class="text-sm font-medium text-gray-700">AST/TGO (U/L)</label><input type="text" id="ast_tgo" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="alt_tgp" class="text-sm font-medium text-gray-700">ALT/TGP (U/L)</label><input type="text" id="alt_tgp" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
@@ -127,7 +151,7 @@
                                 <div><label for="bili_t" class="text-sm font-medium text-gray-700">Bilirrubina Total (mg/dL)</label><input type="text" id="bili_t" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 <div><label for="albumina" class="text-sm font-medium text-gray-700">Albumina (g/dL)</label><input type="text" id="albumina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                             </div>
-                        </div>
+                         </div>
                         
                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                              <div class="exam-group border-purple-200">
@@ -138,7 +162,7 @@
                                     <div><label for="cl" class="text-sm font-medium text-gray-700">Cl- (mEq/L)</label><input type="text" id="cl" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                     <div><label for="ca" class="text-sm font-medium text-gray-700">Ca²+ (mg/dL)</label><input type="text" id="ca" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 </div>
-                            </div>
+                             </div>
                              <div class="exam-group border-cyan-200">
                                 <h3 class="text-lg font-semibold mb-3 text-cyan-800">Gasometria</h3>
                                 <div class="space-y-3">
@@ -147,13 +171,18 @@
                                     <div><label for="hco3" class="text-sm font-medium text-gray-700">HCO₃⁻ (mmol/L)</label><input type="text" id="hco3" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                     <div><label for="po2" class="text-sm font-medium text-gray-700">pO₂ (mmHg)</label><input type="text" id="po2" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
                                 </div>
-                            </div>
+                             </div>
                          </div>
                     </div>
                     
                     <div class="mt-8">
                          <label for="outros_dados" class="block text-sm font-medium text-gray-700">Dados Clínicos e Contexto</label>
-                         <textarea id="outros_dados" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 focus:ring-rose-500 focus:border-rose-500" placeholder="Ej: Paciente de 45 años, masculino, com febre há 3 dias e mialgias. Residente de zona endémica para Chagas e Dengue."></textarea>
+                         <textarea id="outros_dados" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 focus:ring-rose-500 focus:border-rose-500" placeholder="Ex: Paciente de 45 anos, masculino, com febre há 3 dias e mialgias. Residente de zona endêmica para Chagas e Dengue."></textarea>
+                    </div>
+
+                    <div id="form-error-message" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 my-6" role="alert">
+                        <p class="font-bold">Atenção</p>
+                        <p>Por favor, preencha pelo menos um campo de exame para gerar a análise.</p>
                     </div>
 
                     <div id="action-buttons-container" class="mt-8 pt-6 border-t border-gray-200 flex justify-center flex-wrap gap-4">
@@ -172,17 +201,26 @@
                 <p class="mt-4 text-lg text-gray-600">Analisando dados... Por favor, aguarde.</p>
             </div>
             
-            <div id="error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-6" role="alert">
+            <div id="api-error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-6" role="alert">
                 <p class="font-bold">Ocorreu um erro</p>
                 <p id="error-content">Não foi possível gerar a análise. Por favor, tente novamente.</p>
             </div>
 
             <div id="report-output" style="display: none;" class="mt-10 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <div class="border-b border-gray-200 mb-4">
+                <div class="border-b border-gray-200 mb-4 flex justify-between items-center">
                     <nav class="tab-buttons -mb-px flex space-x-6" aria-label="Tabs">
-                        <button class="tab-btn active" data-tab="folheto-paciente-section">Orientação ao Paciente</button>
-                        <button class="tab-btn" data-tab="tabla-resumen-section">Tabela Resumo</button>
+                        <button class="tab-btn active whitespace-nowrap" data-tab="folheto-paciente-section">Orientação ao Paciente</button>
+                        <button class="tab-btn whitespace-nowrap" data-tab="tabla-resumen-section">Tabela Resumo</button>
                     </nav>
+                     <!-- BOTÕES DE AÇÃO DO RELATÓRIO -->
+                    <div id="report-actions" class="flex space-x-2">
+                        <button id="whatsapp-share-btn" class="p-2 rounded-full bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75" title="Compartilhar no WhatsApp">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM3.63 5.33a6.4 6.4 0 018.9-1.23l.63.36c-1.3 1.3-2.5 2.8-4.04 4.04l-.36-.63a6.4 6.4 0 01-1.23-8.9zm8.04 8.04a6.4 6.4 0 01-8.9 1.23l-.63-.36c1.3-1.3 2.5-2.8 4.04-4.04l.36.63a6.4 6.4 0 011.23 8.9zM10 11.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+                        </button>
+                        <button id="print-report-btn" class="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75" title="Imprimir Relatório">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3h10V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm10 5H5a2 2 0 00-2 2v3a2 2 0 002 2h10a2 2 0 002-2v-3a2 2 0 00-2-2zM8 12a1 1 0 112 0 1 1 0 01-2 0z" clip-rule="evenodd" /></svg>
+                        </button>
+                    </div>
                 </div>
                 
                 <div id="folheto-paciente-section" class="tab-content active space-y-4 patient-handout"></div>
@@ -190,12 +228,17 @@
             </div>
         </main>
         
-        <footer id="main-footer" class="text-center mt-12 pt-8 border-t border-gray-200 text-sm text-gray-500 max-w-3xl mx-auto">
-            <p>&copy; 2024 Missionary Medical Care</p>
+        <!-- RODAPÉ ATUALIZADO -->
+        <footer id="main-footer" class="mt-12">
+             <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-md" role="alert">
+                <p class="font-bold">ATENÇÃO</p>
+                <p class="text-sm">A informação nesta aplicação não tem a intenção de ser um conselho profissional nem pretende substituir uma consulta pessoal com um médico, farmacêutico ou outro profissional da saúde qualificado. O leitor não deve ignorar o conselho médico nem adiar a procura de conselho médico devido à informação encontrada nesta aplicação.</p>
+            </div>
         </footer>
     </div>
 
     <script type="module">
+        // --- Service Worker e Lógica de Instalação do PWA (sem alterações) ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed: ', err));
@@ -213,13 +256,24 @@
             deferredPrompt.prompt();
         });
 
+        // --- Variável global para armazenar os dados do relatório atual ---
+        let currentReportData = null;
+
+        // --- Elementos do DOM ---
         const generateBtn = document.getElementById('generate-report-btn');
         const labForm = document.getElementById('lab-form');
         const loadingSection = document.getElementById('loading-section');
-        const errorMessage = document.getElementById('error-message');
+        const apiErrorMessage = document.getElementById('api-error-message');
+        const formErrorMessage = document.getElementById('form-error-message');
         const reportOutput = document.getElementById('report-output');
+        const printBtn = document.getElementById('print-report-btn');
+        const whatsappBtn = document.getElementById('whatsapp-share-btn');
+
 
         generateBtn.addEventListener('click', async () => {
+            formErrorMessage.style.display = 'none';
+            apiErrorMessage.style.display = 'none';
+
             const formInputs = Array.from(labForm.querySelectorAll('input[type="text"], textarea'));
             const textData = formInputs.map(input => {
                 const label = labForm.querySelector(`label[for="${input.id}"]`);
@@ -227,19 +281,16 @@
             }).filter(item => item.value.trim() !== '');
             
             if (textData.length === 0) {
-                alert("Por favor, preencha pelo menos um campo do formulário.");
+                formErrorMessage.style.display = 'block';
                 return;
             }
 
             loadingSection.style.display = 'block';
             reportOutput.style.display = 'none';
-            errorMessage.style.display = 'none';
-            
             generateBtn.disabled = true;
             generateBtn.innerHTML = `<div class="loader-small"></div><span class="ml-2">Analisando...</span>`;
             
-            // MODIFICADO: Chave da API inserida.
-            const apiKey = "AIzaSyBSwG0EMH7kvf7DLo4j280wb42uaWmp_ZA";
+            const apiKey = "";
 
             let mainPrompt = `
                 Aja como um médico especialista em patologia clínica e comunicação com o paciente.
@@ -304,7 +355,7 @@
 
                 if (!response.ok) {
                     const errorBody = await response.json().catch(() => null);
-                    throw new Error(errorBody?.error?.message || `Error de API: ${response.status}`);
+                    throw new Error(errorBody?.error?.message || `Erro de API: ${response.status}`);
                 }
                 const result = await response.json();
                 if (result.candidates && result.candidates[0].content) {
@@ -316,7 +367,7 @@
             } catch (error) {
                 console.error("Erro ao gerar relatório:", error);
                 document.getElementById('error-content').textContent = `Falha na comunicação com a API: ${error.message}`;
-                errorMessage.style.display = 'block';
+                apiErrorMessage.style.display = 'block';
             } finally {
                 loadingSection.style.display = 'none';
                 generateBtn.disabled = false;
@@ -324,7 +375,36 @@
             }
         });
 
-        // Lógica de Abas
+        // --- Event Listeners para os novos botões ---
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+
+        whatsappBtn.addEventListener('click', () => {
+            if (!currentReportData) return;
+
+            // Cria uma mensagem concisa para o WhatsApp
+            let message = `*Análise de Exames - Missionary Medical Care*\n\n`;
+            message += `*Hipótese Principal:*\n${currentReportData.folhetoPaciente.titulo || 'N/A'}\n\n`;
+            
+            if(currentReportData.tablaResumen && currentReportData.tablaResumen.length > 0){
+                message += `*Resumo dos Achados Alterados:*\n`;
+                currentReportData.tablaResumen.forEach(item => {
+                    message += `• ${item.parametro}: ${item.valor} (${item.interpretacion})\n`;
+                });
+            } else {
+                message += `*Nenhum valor alterado significativo foi encontrado.*\n`
+            }
+            
+            message += `\n*Atenção:* Este é um resumo gerado por IA e não substitui uma consulta e avaliação médica completa.`;
+
+            // Abre o link do WhatsApp
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+
+
+        // --- Lógica de Abas (Tabs) ---
         const tabs = document.querySelectorAll('.tab-btn');
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -337,6 +417,9 @@
         });
 
         function displayReport(data) {
+            // Armazena os dados do relatório para uso posterior (compartilhamento)
+            currentReportData = data;
+            
             // Renderiza a Tabela Resumo
             const tableContainer = document.getElementById('tabla-resumen-section');
             let tableHtml = `<table class="min-w-full"><thead class="bg-rose-800"><tr>
@@ -367,28 +450,13 @@
 
             handoutContainer.innerHTML = `
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">${handout.titulo || 'Folheto Informativo'}</h2>
-                
-                <h3>O que é?</h3>
-                <p>${formatText(handout.oQueE)}</p>
-
-                <h3>Sinais/sintomas comuns</h3>
-                <p>${formatText(handout.sinaisSintomas)}</p>
-                
-                <h3>Causas ou fatores de risco</h3>
-                <p>${formatText(handout.causasFatoresRisco)}</p>
-                
-                <h3>Possíveis complicações</h3>
-                <p>${formatText(handout.possiveisComplicacoes)}</p>
-                
-                <h3>Opções de tratamento</h3>
-                <p>${formatText(handout.opcoesTratamento)}</p>
-                
-                <h3>Quando procurar ajuda</h3>
-                <p>${formatText(handout.quandoProcurarAjuda)}</p>
-                
-                <h3>Aconselhamento adicional ou acompanhamento</h3>
-                <p>${formatText(handout.aconselhamentoAdicional)}</p>
-                
+                <h3>O que é?</h3><p>${formatText(handout.oQueE)}</p>
+                <h3>Sinais/sintomas comuns</h3><p>${formatText(handout.sinaisSintomas)}</p>
+                <h3>Causas ou fatores de risco</h3><p>${formatText(handout.causasFatoresRisco)}</p>
+                <h3>Possíveis complicações</h3><p>${formatText(handout.possiveisComplicacoes)}</p>
+                <h3>Opções de tratamento</h3><p>${formatText(handout.opcoesTratamento)}</p>
+                <h3>Quando procurar ajuda</h3><p>${formatText(handout.quandoProcurarAjuda)}</p>
+                <h3>Aconselhamento adicional ou acompanhamento</h3><p>${formatText(handout.aconselhamentoAdicional)}</p>
                 <p class="disclaimer">Este folheto é apenas para fins informativos gerais e não substitui o aconselhamento médico profissional.</p>
             `;
             
