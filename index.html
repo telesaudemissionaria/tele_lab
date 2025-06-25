@@ -238,22 +238,8 @@
             generateBtn.disabled = true;
             generateBtn.innerHTML = `<div class="loader-small"></div><span class="ml-2">Analisando...</span>`;
             
-            // MODIFICADO: Instrução para inserir a chave da API
-            // IMPORTANTE: Substitua a string "SUA_CHAVE_DE_API_AQUI" pela sua própria chave de API do Google AI Studio.
-            // A chave é necessária para que o aplicativo possa se comunicar com a inteligência artificial.
-            // Mantenha sua chave de API segura e não a compartilhe publicamente.
-            const apiKey = "SUA_CHAVE_DE_API_AQUI";
-
-            // MODIFICADO: Adicionada verificação da chave de API
-            if (apiKey === "SUA_CHAVE_DE_API_AQUI" || !apiKey) {
-                console.error("API Key não configurada.");
-                document.getElementById('error-content').textContent = "Erro de configuração: A chave da API do Google não foi definida no código. Por favor, obtenha sua chave no Google AI Studio e insira-a na variável 'apiKey' no código-fonte.";
-                errorMessage.style.display = 'block';
-                loadingSection.style.display = 'none';
-                generateBtn.disabled = false;
-                generateBtn.innerHTML = 'Gerar Análise Profissional';
-                return; // Interrompe a execução
-            }
+            // MODIFICADO: Chave da API inserida.
+            const apiKey = "AIzaSyBSwG0EMH7kvf7DLo4j280wb42uaWmp_ZA";
 
             let mainPrompt = `
                 Aja como um médico especialista em patologia clínica e comunicação com o paciente.
