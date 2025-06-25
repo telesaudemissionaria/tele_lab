@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,6 +43,28 @@
             border-left-width: 4px;
             padding: 1rem;
             border-radius: 0.25rem;
+        }
+        /* Estilos para o Folheto do Paciente */
+        .patient-handout h3 {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 700; /* font-bold */
+            color: #4b5563; /* text-gray-600 */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid #e5e7eb; /* border-gray-200 */
+        }
+        .patient-handout p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .patient-handout .disclaimer {
+            font-size: 0.875rem; /* text-sm */
+            font-style: italic;
+            color: #6b7280; /* text-gray-500 */
+            margin-top: 1.5rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e5e7eb; /* border-gray-200 */
         }
     </style>
 </head>
@@ -107,8 +129,8 @@
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="exam-group border-purple-200">
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div class="exam-group border-purple-200">
                                 <h3 class="text-lg font-semibold mb-3 text-purple-800">Eletrólitos</h3>
                                 <div class="space-y-3">
                                     <div><label for="na" class="text-sm font-medium text-gray-700">Na+ (mEq/L)</label><input type="text" id="na" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
@@ -158,12 +180,14 @@
             <div id="report-output" style="display: none;" class="mt-10 bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <div class="border-b border-gray-200 mb-4">
                     <nav class="tab-buttons -mb-px flex space-x-6" aria-label="Tabs">
-                        <button class="tab-btn active" data-tab="reporte-detallado-section">Relatório Detalhado</button>
+                        <!-- MODIFICADO: Nome da aba alterado -->
+                        <button class="tab-btn active" data-tab="folheto-paciente-section">Orientação ao Paciente</button>
                         <button class="tab-btn" data-tab="tabla-resumen-section">Tabela Resumo</button>
                     </nav>
                 </div>
                 
-                <div id="reporte-detallado-section" class="tab-content active space-y-4 prose max-w-none text-gray-700"></div>
+                <!-- MODIFICADO: ID e classe do container do conteúdo alterados -->
+                <div id="folheto-paciente-section" class="tab-content active space-y-4 patient-handout"></div>
                 <div id="tabla-resumen-section" class="tab-content overflow-x-auto"></div>
             </div>
         </main>
@@ -205,6 +229,8 @@
             }).filter(item => item.value.trim() !== '');
             
             if (textData.length === 0) {
+                // MODIFICADO: Alterado de alert para um modal/caixa de mensagem customizada no futuro
+                // Por enquanto, o alert é mantido por simplicidade, mas o ideal é substituí-lo.
                 alert("Por favor, preencha pelo menos um campo do formulário.");
                 return;
             }
@@ -216,29 +242,68 @@
             generateBtn.disabled = true;
             generateBtn.innerHTML = `<div class="loader-small"></div><span class="ml-2">Analisando...</span>`;
 
-            let promptParts = [];
+            // MODIFICADO: Prompt ajustado para gerar o folheto do paciente
             let mainPrompt = `
-                Aja como um médico especialista em patologia clínica para dar apoio a outro profissional de saúde.
-                Analise os dados de laboratório e o contexto clínico fornecidos.
-                Gere um relatório técnico estruturado com dois componentes: uma tabela resumo dos valores alterados e um relatório detalhado com interpretação, condutas e hipóteses.
+                Aja como um médico especialista em patologia clínica e comunicação com o paciente.
+                Baseado nos dados de laboratório e no contexto clínico fornecidos, gere uma análise para o profissional de saúde e um folheto explicativo para o paciente.
                 O idioma deve ser o mesmo dos dados (português/espanhol).
+
+                A análise deve conter dois componentes:
+                1.  Uma tabela resumo dos valores alterados.
+                2.  Um "Folheto do Paciente" sobre a principal hipótese diagnóstica. Este folheto deve ser escrito em linguagem simples e clara, seguindo o modelo:
+                    - Título: Nome da condição.
+                    - O que é?: Descrição da doença.
+                    - Sinais/sintomas comuns: Lista dos principais sinais.
+                    - Causas ou fatores de risco: Explicação das possíveis causas.
+                    - Possíveis complicações: Riscos associados à doença.
+                    - Opções de tratamento: Resumo das abordagens terapêuticas.
+                    - Quando procurar ajuda: Sinais de alerta para buscar atendimento médico.
+                    - Aconselhamento adicional ou acompanhamento: Recomendações de estilo de vida e seguimento.
+                    - Disclaimer: "Este folheto é apenas para fins informativos gerais e não substitui o aconselhamento médico profissional."
 
                 **Dados Fornecidos para Análise:**\n${textData.map(item => `- ${item.id}: ${item.value}`).join('\n')}
             `;
+            
+            let promptParts = [{ text: mainPrompt }];
 
-            promptParts.push({ text: mainPrompt });
-
+            // MODIFICADO: Schema ajustado para a nova estrutura do folheto
             const schema = {
                 type: "OBJECT",
                 properties: {
-                    tablaResumen: { type: "ARRAY", items: { type: "OBJECT", properties: { parametro: { type: "STRING" }, valor: { type: "STRING" }, interpretacion: { type: "STRING" } }, required: ["parametro", "valor", "interpretacion"] } },
-                    reporteDetallado: { type: "OBJECT", properties: { interpretacion: { type: "STRING" }, conductas: { type: "STRING" }, hipotesis: { type: "STRING" } }, required: ["interpretacion", "conductas", "hipotesis"] }
+                    tablaResumen: { 
+                        type: "ARRAY", 
+                        items: { 
+                            type: "OBJECT", 
+                            properties: { 
+                                parametro: { type: "STRING" }, 
+                                valor: { type: "STRING" }, 
+                                interpretacion: { type: "STRING" } 
+                            }, 
+                            required: ["parametro", "valor", "interpretacion"] 
+                        } 
+                    },
+                    folhetoPaciente: {
+                        type: "OBJECT",
+                        properties: {
+                            titulo: { type: "STRING", description: "Nome da principal hipótese diagnóstica." },
+                            oQueE: { type: "STRING", description: "O que é a doença." },
+                            sinaisSintomas: { type: "STRING", description: "Sinais e sintomas comuns." },
+                            causasFatoresRisco: { type: "STRING", description: "Causas ou fatores de risco." },
+                            possiveisComplicacoes: { type: "STRING", description: "Possíveis complicações." },
+                            opcoesTratamento: { type: "STRING", description: "Opções de tratamento." },
+                            quandoProcurarAjuda: { type: "STRING", description: "Quando procurar ajuda médica." },
+                            aconselhamentoAdicional: { type: "STRING", description: "Aconselhamento adicional ou acompanhamento." }
+                        },
+                        required: ["titulo", "oQueE", "sinaisSintomas", "causasFatoresRisco", "possiveisComplicacoes", "opcoesTratamento", "quandoProcurarAjuda", "aconselhamentoAdicional"]
+                    }
                 },
-                required: ["tablaResumen", "reporteDetallado"]
+                required: ["tablaResumen", "folhetoPaciente"]
             };
 
             try {
-                const apiKey = "AIzaSyBSwG0EMH7kvf7DLo4j280wb42uaWmp_ZA"; 
+                // IMPORTANTE: A chave de API é exposta aqui para fins de demonstração.
+                // Em um ambiente de produção real, mova esta lógica para um backend seguro.
+                const apiKey = "";  // DEIXE EM BRANCO - a plataforma se encarrega disso.
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const payload = { contents: [{ parts: promptParts }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -252,10 +317,10 @@
                     const reportData = JSON.parse(result.candidates[0].content.parts[0].text);
                     displayReport(reportData);
                 } else {
-                     throw new Error("Resposta da API inválida.");
+                     throw new Error("Resposta da API inválida ou sem conteúdo.");
                 }
             } catch (error) {
-                console.error("Error al generar reporte:", error);
+                console.error("Erro ao gerar relatório:", error);
                 document.getElementById('error-content').textContent = error.message;
                 errorMessage.style.display = 'block';
             } finally {
@@ -277,35 +342,62 @@
             });
         });
 
+        // MODIFICADO: Função atualizada para exibir o folheto do paciente
         function displayReport(data) {
+            // Renderiza a Tabela Resumo
             const tableContainer = document.getElementById('tabla-resumen-section');
             let tableHtml = `<table class="min-w-full"><thead class="bg-rose-800"><tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Parámetro</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Parâmetro</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Valor</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Interpretación</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase">Interpretação</th>
                             </tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
-            (data.tablaResumen || []).forEach((item, index) => {
-                const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
-                tableHtml += `<tr class="${bgColor}">
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.parametro}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">${item.valor}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">${item.interpretacion}</td>
-                </tr>`;
-            });
+            if (data.tablaResumen && data.tablaResumen.length > 0) {
+                data.tablaResumen.forEach((item, index) => {
+                    const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
+                    tableHtml += `<tr class="${bgColor}">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.parametro}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${item.valor}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700">${item.interpretacion}</td>
+                    </tr>`;
+                });
+            } else {
+                tableHtml += `<tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhum valor alterado significativo foi encontrado.</td></tr>`;
+            }
             tableHtml += '</tbody></table>';
             tableContainer.innerHTML = tableHtml;
 
-            const detailContainer = document.getElementById('reporte-detallado-section');
-            const reporte = data.reporteDetallado || {};
-            detailContainer.innerHTML = `
-                <div class="prose max-w-none">
-                    <h3>Hipótesis Diagnósticas</h3>
-                    <p>${(reporte.hipotesis || 'N/A').replace(/\n/g, '<br>')}</p>
-                    <h3>Interpretación Integrada</h3>
-                    <p>${(reporte.interpretacion || 'N/A').replace(/\n/g, '<br>')}</p>
-                    <h3>Sugestões de Conduta</h3>
-                    <p>${(reporte.conductas || 'N/A').replace(/\n/g, '<br>')}</p>
-                </div>
+            // Renderiza o Folheto do Paciente
+            const handoutContainer = document.getElementById('folheto-paciente-section');
+            const handout = data.folhetoPaciente || {};
+            
+            // Função auxiliar para substituir quebras de linha por <br>
+            const formatText = (text) => text ? text.replace(/\n/g, '<br>') : 'Informação não disponível.';
+
+            handoutContainer.innerHTML = `
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">${handout.titulo || 'Folheto Informativo'}</h2>
+                
+                <h3>O que é?</h3>
+                <p>${formatText(handout.oQueE)}</p>
+
+                <h3>Sinais/sintomas comuns</h3>
+                <p>${formatText(handout.sinaisSintomas)}</p>
+                
+                <h3>Causas ou fatores de risco</h3>
+                <p>${formatText(handout.causasFatoresRisco)}</p>
+                
+                <h3>Possíveis complicações</h3>
+                <p>${formatText(handout.possiveisComplicacoes)}</p>
+                
+                <h3>Opções de tratamento</h3>
+                <p>${formatText(handout.opcoesTratamento)}</p>
+                
+                <h3>Quando procurar ajuda</h3>
+                <p>${formatText(handout.quandoProcurarAjuda)}</p>
+                
+                <h3>Aconselhamento adicional ou acompanhamento</h3>
+                <p>${formatText(handout.aconselhamentoAdicional)}</p>
+                
+                <p class="disclaimer">Este folheto é apenas para fins informativos gerais e não substitui o aconselhamento médico profissional.</p>
             `;
             
             reportOutput.style.display = 'block';
