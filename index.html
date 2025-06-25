@@ -180,13 +180,11 @@
             <div id="report-output" style="display: none;" class="mt-10 bg-white p-6 rounded-lg shadow-md border border-gray-200">
                 <div class="border-b border-gray-200 mb-4">
                     <nav class="tab-buttons -mb-px flex space-x-6" aria-label="Tabs">
-                        <!-- MODIFICADO: Nome da aba alterado -->
                         <button class="tab-btn active" data-tab="folheto-paciente-section">Orientação ao Paciente</button>
                         <button class="tab-btn" data-tab="tabla-resumen-section">Tabela Resumo</button>
                     </nav>
                 </div>
                 
-                <!-- MODIFICADO: ID e classe do container do conteúdo alterados -->
                 <div id="folheto-paciente-section" class="tab-content active space-y-4 patient-handout"></div>
                 <div id="tabla-resumen-section" class="tab-content overflow-x-auto"></div>
             </div>
@@ -229,8 +227,6 @@
             }).filter(item => item.value.trim() !== '');
             
             if (textData.length === 0) {
-                // MODIFICADO: Alterado de alert para um modal/caixa de mensagem customizada no futuro
-                // Por enquanto, o alert é mantido por simplicidade, mas o ideal é substituí-lo.
                 alert("Por favor, preencha pelo menos um campo do formulário.");
                 return;
             }
@@ -241,8 +237,24 @@
             
             generateBtn.disabled = true;
             generateBtn.innerHTML = `<div class="loader-small"></div><span class="ml-2">Analisando...</span>`;
+            
+            // MODIFICADO: Instrução para inserir a chave da API
+            // IMPORTANTE: Substitua a string "SUA_CHAVE_DE_API_AQUI" pela sua própria chave de API do Google AI Studio.
+            // A chave é necessária para que o aplicativo possa se comunicar com a inteligência artificial.
+            // Mantenha sua chave de API segura e não a compartilhe publicamente.
+            const apiKey = "SUA_CHAVE_DE_API_AQUI";
 
-            // MODIFICADO: Prompt ajustado para gerar o folheto do paciente
+            // MODIFICADO: Adicionada verificação da chave de API
+            if (apiKey === "SUA_CHAVE_DE_API_AQUI" || !apiKey) {
+                console.error("API Key não configurada.");
+                document.getElementById('error-content').textContent = "Erro de configuração: A chave da API do Google não foi definida no código. Por favor, obtenha sua chave no Google AI Studio e insira-a na variável 'apiKey' no código-fonte.";
+                errorMessage.style.display = 'block';
+                loadingSection.style.display = 'none';
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = 'Gerar Análise Profissional';
+                return; // Interrompe a execução
+            }
+
             let mainPrompt = `
                 Aja como um médico especialista em patologia clínica e comunicação com o paciente.
                 Baseado nos dados de laboratório e no contexto clínico fornecidos, gere uma análise para o profissional de saúde e um folheto explicativo para o paciente.
@@ -266,7 +278,6 @@
             
             let promptParts = [{ text: mainPrompt }];
 
-            // MODIFICADO: Schema ajustado para a nova estrutura do folheto
             const schema = {
                 type: "OBJECT",
                 properties: {
@@ -301,9 +312,6 @@
             };
 
             try {
-                // IMPORTANTE: A chave de API é exposta aqui para fins de demonstração.
-                // Em um ambiente de produção real, mova esta lógica para um backend seguro.
-                const apiKey = "";  // DEIXE EM BRANCO - a plataforma se encarrega disso.
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 const payload = { contents: [{ parts: promptParts }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
@@ -321,7 +329,7 @@
                 }
             } catch (error) {
                 console.error("Erro ao gerar relatório:", error);
-                document.getElementById('error-content').textContent = error.message;
+                document.getElementById('error-content').textContent = `Falha na comunicação com a API: ${error.message}`;
                 errorMessage.style.display = 'block';
             } finally {
                 loadingSection.style.display = 'none';
@@ -342,7 +350,6 @@
             });
         });
 
-        // MODIFICADO: Função atualizada para exibir o folheto do paciente
         function displayReport(data) {
             // Renderiza a Tabela Resumo
             const tableContainer = document.getElementById('tabla-resumen-section');
@@ -370,7 +377,6 @@
             const handoutContainer = document.getElementById('folheto-paciente-section');
             const handout = data.folhetoPaciente || {};
             
-            // Função auxiliar para substituir quebras de linha por <br>
             const formatText = (text) => text ? text.replace(/\n/g, '<br>') : 'Informação não disponível.';
 
             handoutContainer.innerHTML = `
