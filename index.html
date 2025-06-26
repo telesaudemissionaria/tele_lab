@@ -7,483 +7,430 @@
     <meta name="theme-color" content="#ffffff"/>
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* bg-slate-50 */
-        }
-        .loader {
-            border-top-color: #9f1239; /* rose-800 */
-            -webkit-animation: spin 1s linear infinite;
-            animation: spin 1s linear infinite;
-        }
-        .loader-small {
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid #fff;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+        .font-lora { font-family: 'Lora', serif; }
+        .app-header { background-color: #881337; }
+        .loader { border-top-color: #881337; animation: spin 1s linear infinite; }
+        .loader-small { border: 2px solid rgba(255, 255, 255, 0.3); border-top: 2px solid #fff; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .tab-btn.active {
-            border-bottom-color: #9f1239; /* rose-800 */
-            color: #9f1239;
-            font-weight: 600;
+        .tab-btn.active { border-bottom-color: #881337; color: #881337; font-weight: 600; }
+        .patient-handout h3, .emergency-details h3 { font-size: 1.125rem; font-weight: 700; color: #4b5563; margin-top: 1.25rem; margin-bottom: 0.5rem; padding-bottom: 0.25rem; border-bottom: 1px solid #e5e7eb; }
+        .patient-handout p, .emergency-details p, .emergency-details li { line-height: 1.6; margin-bottom: 0.75rem; }
+        .patient-handout .disclaimer { font-size: 0.875rem; font-style: italic; color: #6b7280; margin-top: 1.5rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb; }
+        .info-card { background-color: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+        .category-card { border-radius: 1rem; padding: 1rem; text-align: center; transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; }
+        .category-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; background: #e5e7eb; border-radius: 5px; outline: none; opacity: 0.7; transition: opacity .2s; }
+        input[type="range"]:hover { opacity: 1; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #881337; cursor: pointer; border-radius: 50%; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 50; backdrop-filter: blur(4px); transition: opacity 0.3s ease; }
+        .modal-content { background: white; padding: 2rem; border-radius: 0.75rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s ease; }
+        .modal-overlay:not(.hidden) .modal-content { transform: scale(1); }
+        .symptom-tag { display: inline-flex; align-items: center; background-color: #e0e7ff; color: #3730a3; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; margin: 0.25rem;}
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background-color: #eef2ff; color: #4338ca;
+            font-weight: 600; font-size: 0.875rem;
+            padding: 0.5rem 1rem; border-radius: 9999px;
+            transition: background-color 0.2s;
         }
-        .exam-group {
-            background-color: #fdfdfe;
-            border-left-width: 4px;
-            padding: 1rem;
-            border-radius: 0.25rem;
-        }
-        .patient-handout h3 {
-            font-size: 1.125rem; /* text-lg */
-            font-weight: 700; /* font-bold */
-            color: #4b5563; /* text-gray-600 */
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.25rem;
-            border-bottom: 1px solid #e5e7eb; /* border-gray-200 */
-        }
-        .patient-handout p {
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-        .patient-handout .disclaimer {
-            font-size: 0.875rem; /* text-sm */
-            font-style: italic;
-            color: #6b7280; /* text-gray-500 */
-            margin-top: 1.5rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid #e5e7eb; /* border-gray-200 */
-        }
-        
-        /* ESTILOS DE IMPRESSÃO CORRIGIDOS E ROBUSTOS */
+        .back-btn:hover { background-color: #e0e7ff; }
         @media print {
-            /* 1. Esconde tudo que não deve ser impresso */
-            body > .container > header,
-            main > #input-section,
-            main > #loading-section,
-            main > #api-error-message,
-            main > #form-error-message,
-            body > .container > footer,
-            #report-actions,
-            .tab-buttons {
-                display: none !important;
-            }
-
-            /* 2. Garante que a seção do relatório e seu contêiner principal sejam visíveis */
-            main, #report-output {
-                display: block !important;
-                visibility: visible !important;
-            }
-            
-            /* 3. Reseta estilos do contêiner para uma impressão limpa */
-            .container, main, #report-output {
-                 margin: 0 !important;
-                 padding: 0 !important;
-                 box-shadow: none !important;
-                 border: none !important;
-            }
-
-            /* 4. Mostra APENAS a aba de conteúdo que está ativa */
-            .tab-content {
-                display: none !important;
-            }
-            .tab-content.active {
-                display: block !important;
-            }
-
-            /* 5. Estilos para garantir que a tabela seja impressa corretamente */
-            .overflow-x-auto {
-                overflow-x: visible;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 10pt;
-            }
-            th, td {
-                border: 1px solid #ccc;
-                padding: 6px;
-            }
-            thead {
-                background-color: #f0f0f0 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            h2, h3 {
-                page-break-after: avoid;
-            }
+            .no-print, body > .modal-overlay, .app-header, main > .page-section:not(#report-output) { display: none !important; }
+            body { background-color: white; }
+            main, #report-output { display: block !important; visibility: visible !important; }
+            .container, main, #report-output { margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-gray-800">
+<body class="bg-slate-100 text-gray-800">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
-        <header id="main-header" class="text-center mb-8 flex flex-col items-center">
-            <div class="relative h-24 w-24 mb-3">
-                <svg class="absolute text-red-600 h-24 w-24" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 3a1 1 0 00-1 1v.217l-4.21 6.315A1 1 0 005.79 12H14.2a1 1 0 00.9-.567L11 4.217V4a1 1 0 00-1-1zM5 13a1 1 0 00-1 1v2a1 1 0 001 1h10a1 1 0 001-1v-2a1 1 0 00-1-1H5z" clip-rule="evenodd" />
-                </svg>
-                <svg class="absolute text-gray-600 h-12 w-12 top-[-10px] left-1/2 -translate-x-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.136 12.006a8.25 8.25 0 0113.728 0M12 18.75a.75.75 0 100-1.5.75.75 0 000 1.5z" />
-                </svg>
+    <header class="app-header text-white p-3 shadow-lg no-print">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center"><svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg></div>
+                <span class="font-bold text-lg tracking-wide">TELE LABORATORIO MISSIONÁRIO</span>
             </div>
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-wide">MISSIONARY MEDICAL CARE</h1>
-            <h2 class="text-lg md:text-xl font-semibold text-rose-800 mt-2 tracking-wide">TELESSAÚDE MISSIONÁRIA ATÉ OS CONFINS DA TERRA</h2>
-        </header>
+             <a href="https://telesaudemissionaria.github.io/site/" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold hover:bg-white/20 px-3 py-1.5 rounded-md transition-colors">
+                Visitar Site
+            </a>
+        </div>
+    </header>
 
+    <div id="explanation-modal-overlay" class="modal-overlay hidden no-print">
+        <div class="modal-content">
+            <h3 id="explanation-modal-title" class="text-xl font-bold text-gray-800 mb-4"></h3>
+            <p id="explanation-modal-text" class="text-sm text-gray-600 mb-6"></p>
+            <button id="explanation-modal-close-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Entendi</button>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 md:p-6 max-w-4xl">
         <main>
-            <div id="input-section" class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <form id="lab-form">
-                    <h2 class="text-2xl font-semibold mb-6 text-gray-900 border-b border-gray-200 pb-3">Dados do Paciente e Exames</h2>
-                    
-                    <div class="space-y-6">
-                        <div class="exam-group border-red-200">
-                            <h3 class="text-lg font-semibold mb-3 text-red-800">Série Vermelha</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                <div><label for="hemoglobina" class="text-sm font-medium text-gray-700">Hemoglobina (g/dL)</label><input type="text" id="hemoglobina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="hematocrito" class="text-sm font-medium text-gray-700">Hematócrito (%)</label><input type="text" id="hematocrito" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="g_rojos" class="text-sm font-medium text-gray-700">G. Rojos (x10⁶/µL)</label><input type="text" id="g_rojos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="vcm" class="text-sm font-medium text-gray-700">VCM (fL)</label><input type="text" id="vcm" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="hcm" class="text-sm font-medium text-gray-700">HCM (pg)</label><input type="text" id="hcm" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                            </div>
-                        </div>
-                        <div class="exam-group border-blue-200">
-                            <h3 class="text-lg font-semibold mb-3 text-blue-800">Série Branca</h3>
-                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                <div><label for="leucocitos" class="text-sm font-medium text-gray-700">Leucócitos (/mm³)</label><input type="text" id="leucocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="neutrofilos" class="text-sm font-medium text-gray-700">Neutrófilos (%)</label><input type="text" id="neutrofilos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="linfocitos" class="text-sm font-medium text-gray-700">Linfócitos (%)</label><input type="text" id="linfocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="monocitos" class="text-sm font-medium text-gray-700">Monócitos (%)</label><input type="text" id="monocitos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="eosinofilos" class="text-sm font-medium text-gray-700">Eosinófilos (%)</label><input type="text" id="eosinofilos" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="cayados" class="text-sm font-medium text-gray-700">Cayados (%)</label><input type="text" id="cayados" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="plaquetas" class="text-sm font-medium text-gray-700">Plaquetas (/mm³)</label><input type="text" id="plaquetas" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                             </div>
-                        </div>
-                         <div class="exam-group border-yellow-200">
-                            <h3 class="text-lg font-semibold mb-3 text-yellow-800">Perfil Hepático & Química</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                <div><label for="glicose" class="text-sm font-medium text-gray-700">Glicemia (mg/dL)</label><input type="text" id="glicose" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="creatinina" class="text-sm font-medium text-gray-700">Creatinina (mg/dL)</label><input type="text" id="creatinina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="ast_tgo" class="text-sm font-medium text-gray-700">AST/TGO (U/L)</label><input type="text" id="ast_tgo" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="alt_tgp" class="text-sm font-medium text-gray-700">ALT/TGP (U/L)</label><input type="text" id="alt_tgp" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="bili_d" class="text-sm font-medium text-gray-700">Bilirrubina Direta (mg/dL)</label><input type="text" id="bili_d" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="bili_i" class="text-sm font-medium text-gray-700">Bilirrubina Indireta (mg/dL)</label><input type="text" id="bili_i" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="bili_t" class="text-sm font-medium text-gray-700">Bilirrubina Total (mg/dL)</label><input type="text" id="bili_t" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                <div><label for="albumina" class="text-sm font-medium text-gray-700">Albumina (g/dL)</label><input type="text" id="albumina" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                            </div>
-                         </div>
-                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                             <div class="exam-group border-purple-200">
-                                 <h3 class="text-lg font-semibold mb-3 text-purple-800">Eletrólitos</h3>
-                                 <div class="space-y-3">
-                                     <div><label for="na" class="text-sm font-medium text-gray-700">Na+ (mEq/L)</label><input type="text" id="na" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                     <div><label for="k" class="text-sm font-medium text-gray-700">K+ (mEq/L)</label><input type="text" id="k" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                     <div><label for="cl" class="text-sm font-medium text-gray-700">Cl- (mEq/L)</label><input type="text" id="cl" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                     <div><label for="ca" class="text-sm font-medium text-gray-700">Ca²+ (mg/dL)</label><input type="text" id="ca" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                 </div>
-                             </div>
-                             <div class="exam-group border-cyan-200">
-                                 <h3 class="text-lg font-semibold mb-3 text-cyan-800">Gasometria</h3>
-                                 <div class="space-y-3">
-                                     <div><label for="ph" class="text-sm font-medium text-gray-700">pH</label><input type="text" id="ph" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                     <div><label for="pco2" class="text-sm font-medium text-gray-700">pCO₂ (mmHg)</label><input type="text" id="pco2" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                     <div><label for="hco3" class="text-sm font-medium text-gray-700">HCO₃⁻ (mmol/L)</label><input type="text" id="hco3" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                     <div><label for="po2" class="text-sm font-medium text-gray-700">pO₂ (mmHg)</label><input type="text" id="po2" class="mt-1 w-full rounded-md border-gray-300 shadow-sm p-2 text-sm focus:ring-rose-500 focus:border-rose-500"></div>
-                                 </div>
-                             </div>
-                         </div>
-                    </div>
-                    
-                    <div class="mt-8">
-                         <label for="outros_dados" class="block text-sm font-medium text-gray-700">Dados Clínicos e Contexto</label>
-                         <textarea id="outros_dados" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 focus:ring-rose-500 focus:border-rose-500" placeholder="Ex: Paciente de 45 anos, masculino, com febre há 3 dias e mialgias. Residente de zona endêmica para Chagas e Dengue."></textarea>
-                    </div>
-
-                    <div id="form-error-message" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 my-6" role="alert">
-                        <p class="font-bold">Atenção</p>
-                        <p>Por favor, preencha pelo menos um campo de exame para gerar a análise.</p>
-                    </div>
-
-                    <div id="action-buttons-container" class="mt-8 pt-6 border-t border-gray-200 flex justify-center flex-wrap gap-4">
-                        <button type="button" id="generate-report-btn" class="flex items-center justify-center bg-rose-800 hover:bg-rose-900 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-rose-300 disabled:opacity-50">
-                            Gerar Análise Profissional
-                        </button>
-                        <button type="button" id="install-app-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300" style="display: none;">
-                            Instalar App
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <div id="loading-section" class="text-center my-10" style="display: none;">
-                <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-24 w-24 mx-auto"></div>
-                <p class="mt-4 text-lg text-gray-600">Analisando dados... Por favor, aguarde.</p>
-            </div>
-            
-            <div id="api-error-message" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-6" role="alert">
-                <p class="font-bold">Ocorreu um erro</p>
-                <p id="error-content">Não foi possível gerar a análise. Por favor, tente novamente.</p>
-            </div>
-
-            <div id="report-output" style="display: none;" class="mt-10 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <div class="border-b border-gray-200 mb-4 flex justify-between items-center">
-                    <nav class="tab-buttons -mb-px flex space-x-6" aria-label="Tabs">
-                        <button class="tab-btn active whitespace-nowrap py-2 px-1" data-tab="folheto-paciente-section">Orientação ao Paciente</button>
-                        <button class="tab-btn whitespace-nowrap py-2 px-1" data-tab="tabla-resumen-section">Tabela Resumo</button>
-                    </nav>
-                    <div id="report-actions" class="flex flex-col sm:flex-row gap-3">
-                        <button id="whatsapp-share-btn" class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow transition-colors duration-300">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.86 7.86 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943s-.182-.133-.38-.232z"/></svg>
-                           <span>WhatsApp</span>
-                        </button>
-                        <button id="print-report-btn" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition-colors duration-300">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/><path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/></svg>
-                           <span>Imprimir</span>
-                        </button>
+            <div id="dashboard-section" class="page-section active space-y-6">
+                <div class="info-card">
+                    <h3 class="font-bold text-lg text-gray-800 mb-3">PODCAST "ONDE NÃO HÁ MÉDICO"</h3>
+                    <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg" style="position: relative; padding-bottom: 56.25%; height: 0;">
+                        <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube.com/embed/videoseries?list=PL6JIF2YBc-BzT25UX_rTZg1bvDJGMCZV6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 </div>
-                
-                <div id="folheto-paciente-section" class="tab-content active space-y-4 patient-handout"></div>
-                <div id="tabla-resumen-section" class="tab-content overflow-x-auto"></div>
+                 <div class="info-card bg-amber-50/50">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-amber-200 text-amber-800 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" /></svg>
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800">Texto Bíblico para Hoje</h3>
+                    </div>
+                    <div id="daily-verse-container" class="text-gray-600 pl-11"></div>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-3">Categorias</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="category-card bg-rose-50" data-page="patient-info-page"><div class="mb-2 inline-block p-3 bg-rose-500 text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" /></svg></div><span class="font-bold text-rose-800">Peso, Altura e IMC</span></div>
+                        <div class="category-card bg-blue-50" data-page="exams-page"><div class="mb-2 inline-block p-3 bg-blue-500 text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z" /></svg></div><span class="font-bold text-blue-800">Análises e Parâmetros</span></div>
+                        <div class="category-card bg-yellow-50" data-page="symptoms-page"><div class="mb-2 inline-block p-3 bg-yellow-500 text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" /></svg></div><span class="font-bold text-yellow-800">Sintomas</span></div>
+                        <div class="category-card bg-green-50" data-page="context-page"><div class="mb-2 inline-block p-3 bg-green-500 text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg></div><span class="font-bold text-green-800">Notas Adicionais</span></div>
+                        <div class="category-card bg-red-50" data-page="emergencies-page"><div class="mb-2 inline-block p-3 bg-red-500 text-white rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg></div><span class="font-bold text-red-800">Emergências</span></div>
+                    </div>
+                </div>
+                 <div class="mt-8 pt-6 border-t flex justify-center">
+                    <button type="button" id="generate-report-btn" class="flex items-center justify-center bg-rose-800 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300">
+                        Gerar Análise Profissional
+                    </button>
+                </div>
             </div>
-        </main>
-        
-        <footer id="main-footer" class="mt-12">
-             <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-md" role="alert">
-                 <p class="font-bold">ATENÇÃO</p>
-                 <p class="text-sm">A informação nesta aplicação não tem a intenção de ser um conselho profissional nem pretende substituir uma consulta pessoal com um médico, farmacêutico ou outro profissional da saúde qualificado. O leitor não deve ignorar o conselho médico nem adiar a procura de conselho médico devido à informação encontrada nesta aplicação.</p>
+            
+            <form id="lab-form">
+                <div id="patient-info-page" class="page-section info-card">
+                    <button type="button" class="back-to-dashboard-btn back-btn mb-6"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" /></svg>Voltar</button>
+                    <h2 class="text-2xl font-semibold mb-6">Peso, Altura e IMC</h2>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="space-y-6"><div><label class="block text-sm font-medium mb-2">Gênero</label><div class="flex gap-4"><button type="button" data-gender="Masculino" class="gender-btn flex-1 p-3 rounded-lg border-2 border-gray-300">Homem</button><button type="button" data-gender="Feminino" class="gender-btn flex-1 p-3 rounded-lg border-2 border-gray-300">Mulher</button></div><input type="hidden" id="gender-input"></div><div><div class="flex justify-between"><label for="age" class="text-sm font-medium">Idade</label><span id="age-value" class="text-sm font-semibold text-rose-800">40 anos</span></div><input type="range" id="age" min="0" max="120" value="40" class="w-full"></div><div><div class="flex justify-between"><label for="weight" class="text-sm font-medium">Peso</label><span id="weight-value" class="text-sm font-semibold text-rose-800">70 kg</span></div><input type="range" id="weight" min="1" max="250" value="70" class="w-full"></div><div><div class="flex justify-between"><label for="height" class="text-sm font-medium">Altura</label><span id="height-value" class="text-sm font-semibold text-rose-800">175 cm</span></div><input type="range" id="height" min="50" max="250" value="175" class="w-full"></div></div><div class="bg-slate-50 p-6 rounded-lg border flex flex-col justify-center"><h3 class="text-lg font-bold text-center mb-4">Resumo</h3><div id="patient-info-summary" class="space-y-3 text-center"></div></div></div>
+                </div>
+                <div id="exams-page" class="page-section info-card">
+                     <button type="button" class="back-to-dashboard-btn back-btn mb-6"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" /></svg>Voltar</button>
+                     <h2 class="text-2xl font-semibold mb-6">Análises e Parâmetros</h2>
+                     <div id="exam-list" class="space-y-3"></div>
+                </div>
+                <div id="symptoms-page" class="page-section info-card">
+                     <button type="button" class="back-to-dashboard-btn back-btn mb-6"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" /></svg>Voltar</button>
+                     <h2 class="text-2xl font-semibold mb-2">Seleção de Sintomas</h2>
+                     <div id="selected-symptoms-container" class="p-2 border bg-slate-50 rounded-lg mb-4 min-h-[44px] flex flex-wrap gap-2"></div>
+                     <input type="text" id="symptom-search" placeholder="Buscar sintoma..." class="w-full p-2 border border-gray-300 rounded-lg mb-4">
+                     <div id="symptom-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
+                </div>
+                <div id="context-page" class="page-section info-card">
+                     <button type="button" class="back-to-dashboard-btn back-btn mb-6"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" /></svg>Voltar</button>
+                      <h2 class="text-2xl font-semibold mb-6">Notas Adicionais</h2>
+                      <textarea id="outros_dados" rows="8" class="w-full rounded-md border-gray-300 p-2 focus:ring-rose-500" placeholder="Descreva o contexto clínico, histórico relevante, etc."></textarea>
+                </div>
+                <div id="emergencies-page" class="page-section info-card">
+                    <button type="button" class="back-to-dashboard-btn back-btn mb-6"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" /></svg>Voltar</button>
+                    <h2 class="text-2xl font-semibold mb-6">Guias de Emergência</h2>
+                    <p class="text-sm text-gray-500 mb-4">Informações de primeiros socorros para consulta rápida. Não substitui o julgamento clínico nem o atendimento de emergência profissional.</p>
+                    <div id="emergency-list" class="space-y-3"></div>
+                </div>
+                <div id="emergency-detail-page" class="page-section info-card emergency-details">
+                    <button type="button" class="back-to-emergencies-btn back-btn mb-6"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" /></svg>Voltar</button>
+                    <h2 id="emergency-detail-title" class="text-2xl font-bold mb-4 text-red-700"></h2>
+                    <div id="emergency-detail-content"></div>
+                </div>
+            </form>
+
+            <div id="form-error-message" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 my-6 rounded" role="alert"></div>
+            <div id="loading-section" class="page-section text-center my-10"><div class="loader ease-linear rounded-full border-8 h-24 w-24 mx-auto"></div><p class="mt-4 text-lg">Analisando dados...</p></div>
+            <div id="api-error-message" class="page-section hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-6 rounded" role="alert"></div>
+             <div id="report-output" class="page-section info-card mt-6">
+                 <button type="button" class="back-to-dashboard-btn back-btn mb-6 no-print"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" /></svg>Voltar</button>
+                 <div class="border-b mb-4 flex justify-between items-center no-print">
+                    <nav class="tab-buttons -mb-px flex space-x-6" aria-label="Tabs"><button class="tab-btn active py-2 px-1" data-tab="folheto-paciente-section">Orientação</button><button class="tab-btn py-2 px-1" data-tab="tabla-resumen-section">Tabela</button></nav>
+                    <div id="report-actions" class="flex flex-col sm:flex-row gap-3"><button id="whatsapp-share-btn" class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg">WhatsApp</button><button id="print-report-btn" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Imprimir</button></div>
+                 </div>
+                 <div id="folheto-paciente-section" class="tab-content active space-y-4 patient-handout"></div>
+                 <div id="tabla-resumen-section" class="tab-content overflow-x-auto"></div>
              </div>
-        </footer>
+        </main>
     </div>
 
     <script type="module">
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed: ', err));
-            });
-        }
-        let deferredPrompt;
-        const installBtn = document.getElementById('install-app-btn');
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'block';
-        });
-        installBtn.addEventListener('click', (e) => {
-            installBtn.style.display = 'none';
-            deferredPrompt.prompt();
-        });
-
-        let currentReportData = null;
-
-        const generateBtn = document.getElementById('generate-report-btn');
-        const labForm = document.getElementById('lab-form');
-        const loadingSection = document.getElementById('loading-section');
-        const apiErrorMessage = document.getElementById('api-error-message');
-        const formErrorMessage = document.getElementById('form-error-message');
-        const reportOutput = document.getElementById('report-output');
-        const printBtn = document.getElementById('print-report-btn');
-        const whatsappBtn = document.getElementById('whatsapp-share-btn');
-
-
-        generateBtn.addEventListener('click', async () => {
-            formErrorMessage.style.display = 'none';
-            apiErrorMessage.style.display = 'none';
-
-            const formInputs = Array.from(labForm.querySelectorAll('input[type="text"], textarea'));
-            const textData = formInputs.map(input => {
-                const label = labForm.querySelector(`label[for="${input.id}"]`);
-                return { id: (label ? label.innerText : input.id).replace(/ \(.+\)/g, '').trim(), value: input.value };
-            }).filter(item => item.value.trim() !== '');
+        // --- SCRIPT START ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA ---
+            const exams=[{type:"heading",label:"Série Vermelha"},{id:"hemoglobina",label:"Hemoglobina",unit:"g/dL",explanation:"Mostra a quantidade de proteína do sangue que carrega oxigênio. Baixa pode indicar anemia, cansaço ou fraqueza."},{id:"hematocrito",label:"Hematócrito",unit:"%",explanation:"Indica a porcentagem do sangue formada por células vermelhas. Baixo pode ser anemia, alto pode ser desidratação."},{id:"g_rojos",label:"G. Rojos",unit:"x10⁶/µL",explanation:"Mostra o número de glóbulos vermelhos, que transportam oxigênio. Baixo: anemia; alto: possível desidratação ou problema na medula."},{id:"vcm",label:"VCM",unit:"fL",explanation:"Mede o tamanho médio dos glóbulos vermelhos. Ajuda o médico a entender o tipo de anemia."},{id:"hcm",label:"HCM",unit:"pg",explanation:"Mede a quantidade média de hemoglobina em cada glóbulo vermelho. Ajuda a definir o tipo de anemia."},{type:"heading",label:"Série Branca"},{id:"leucocitos",label:"Leucócitos",unit:"/mm³",explanation:"Glóbulos brancos, que defendem contra infecções. Alto: pode ser infecção; baixo: risco de infecção."},{id:"neutrofilos",label:"Neutrófilos",unit:"%",explanation:"Tipo de glóbulo branco. Aumentado em infecções bacterianas."},{id:"linfocitos",label:"Linfócitos",unit:"%",explanation:"Outro tipo de glóbulo branco. Aumenta em infecções virais."},{id:"monocitos",label:"Monócitos",unit:"%",explanation:"Ajudam na defesa contra certos micróbios e inflamações."},{id:"eosinofilos",label:"Eosinófilos",unit:"%",explanation:"Defendem contra parasitas e aumentam em alergias."},{id:"cayados",label:"Cayados",unit:"%",explanation:"Forma jovem de neutrófilos. Se alto, pode indicar infecção aguda."},{id:"plaquetas",label:"Plaquetas",unit:"/mm³",explanation:"Ajudam o sangue a coagular. Baixo: risco de sangramento; alto: risco de trombose."},{type:"heading",label:"Perfil Hepático & Química"},{id:"glicose",label:"Glicemia",unit:"mg/dL",explanation:"Mede o açúcar no sangue. Alto pode indicar diabetes; baixo pode causar mal-estar e desmaios."},{id:"creatinina",label:"Creatinina",unit:"mg/dL",explanation:"Avalia a função dos rins. Alto pode indicar problemas renais."},{id:"ast_tgo",label:"AST/TGO",unit:"U/L",explanation:"Enzima do fígado e músculos. Alta pode indicar lesão no fígado ou músculo."},{id:"alt_tgp",label:"ALT/TGP",unit:"U/L",explanation:"Enzima do fígado. Alta indica lesão ou inflamação no fígado."},{id:"bili_d",label:"Bilirrubina Direta",unit:"mg/dL",explanation:"Pigmento do fígado. Alta pode indicar problema nas vias biliares."},{id:"bili_i",label:"Bilirrubina Indireta",unit:"mg/dL",explanation:"Outra forma de bilirrubina. Alta pode indicar destruição aumentada das células vermelhas."},{id:"bili_t",label:"Bilirrubina Total",unit:"mg/dL",explanation:"Soma das bilirrubinas. Alta causa icterícia (pele amarelada)."},{id:"albumina",label:"Albumina",unit:"g/dL",explanation:"Principal proteína do sangue. Baixa pode indicar problema no fígado, rins ou má nutrição."},{type:"heading",label:"Eletrólitos"},{id:"na",label:"Na+",unit:"mEq/L",explanation:"Sódio. Ajuda a equilibrar os líquidos do corpo. Alterações causam confusão ou fraqueza."},{id:"k",label:"K+",unit:"mEq/L",explanation:"Potássio. Importante para o coração e músculos. Alterações podem causar arritmias."},{id:"cl",label:"Cl-",unit:"mEq/L",explanation:"Cloreto. Ajuda a manter o equilíbrio dos líquidos e o pH do corpo."},{id:"ca",label:"Ca²",unit:"mg/dL",explanation:"Cálcio. Fundamental para ossos, dentes, músculos e coração."},{type:"heading",label:"Gasometria"},{id:"ph",label:"pH",unit:"",explanation:"Mede a acidez do sangue. Alterações indicam problemas respiratórios ou metabólicos."},{id:"pco2",label:"pCO₂",unit:"mmHg",explanation:"Mede o gás carbônico no sangue. Avalia a função pulmonar."},{id:"hco3",label:"HCO₃⁻",unit:"mmol/L",explanation:"Bicarbonato. Ajuda a manter o equilíbrio do pH no sangue."},{id:"po2",label:"pO₂",unit:"mmHg",explanation:"Mede o oxigênio no sangue. Baixo pode indicar dificuldade para respirar."}];
+            const symptoms=[{id:"constipacao",name:"Constipação",explanation:"dificuldade ou demora para evacuar."},{id:"diarreia",name:"Diarreia",explanation:"fezes moles ou líquidas várias vezes ao dia."},{id:"prurido",name:"Prurido",explanation:"coceira na pele ou mucosa."},{id:"disfagia",name:"Disfagia",explanation:"dificuldade para engolir."},{id:"dispepsia",name:"Dispepsia",explanation:"sensação de estômago pesado, má digestão."},{id:"dor",name:"Dor",explanation:"sensação incômoda em alguma parte do corpo."},{id:"flatulencia",name:"Flatulência",explanation:"excesso de gases intestinais, “pum”."},{id:"nausea",name:"Náusea",explanation:"vontade de vomitar, enjoo."},{id:"vomito",name:"Vômito",explanation:"colocar para fora o conteúdo do estômago pela boca."},{id:"soluco",name:"Soluço",explanation:"espasmos repetidos no diafragma, barulho súbito."},{id:"gases",name:"Gases",explanation:"acúmulo de ar no intestino, sensação de estufamento."},{id:"no_garganta",name:"Nó na garganta",explanation:"sensação de “bola” ou aperto na garganta."},{id:"choro",name:"Choro",explanation:"lacrimejar ou chorar, principalmente em bebês."},{id:"tosse",name:"Tosse",explanation:"expulsão de ar rápida pelos pulmões, “cof cof”."},{id:"sibilo",name:"Sibilo",explanation:"chiado no peito ao respirar."},{id:"estridor",name:"Estridor",explanation:"barulho agudo ao inspirar, principalmente em crianças."},{id:"palpitacao",name:"Palpitação",explanation:"sentir o coração batendo forte ou acelerado."},{id:"hemoptise",name:"Hemoptise",explanation:"tosse com sangue."},{id:"hematuria",name:"Hematúria",explanation:"urina avermelhada por sangue."},{id:"epistaxe",name:"Epistaxe",explanation:"sangramento pelo nariz."},{id:"hemorragia",name:"Hemorragia",explanation:"perda de sangue, sangramento intenso."},{id:"sangramento",name:"Sangramento",explanation:"saída de sangue de qualquer lugar."},{id:"amnesia",name:"Amnésia",explanation:"perda de memória."},{id:"tontura",name:"Tontura",explanation:"sensação de desequilíbrio, “cabeça leve”."},{id:"sincope",name:"Síncope",explanation:"desmaio."},{id:"caimbra",name:"Cãibra",explanation:"contração dolorosa dos músculos."},{id:"insonia",name:"Insônia",explanation:"dificuldade para dormir."},{id:"sonolencia",name:"Sonolência",explanation:"vontade de dormir o tempo todo."},{id:"dormencia",name:"Dormência",explanation:"sensação de formigamento ou “parte do corpo adormecida”."},{id:"fraqueza",name:"Fraqueza",explanation:"sensação de corpo sem força."},{id:"febre",name:"Febre",explanation:"temperatura do corpo alta."},{id:"ictericia",name:"Icterícia",explanation:"pele e olhos amarelados."},{id:"linfadenopatia",name:"Linfadenopatia",explanation:"caroços (gânglios) aumentados no pescoço, axila ou virilha."},{id: "edema", name: "Edema", explanation: "inchaço em qualquer parte do corpo."},{id:"urticaria",name:"Urticária",explanation:"manchas avermelhadas e coceira na pele."},{id:"hirsutismo",name:"Hirsutismo",explanation:"aumento de pelos, principalmente em mulheres."},{id:"alopecia",name:"Alopecia",explanation:"queda de cabelo ou pelos."},{id:"anisocoria",name:"Anisocoria",explanation:"pupilas dos olhos de tamanhos diferentes."},{id:"lacrimejamento",name:"Lacrimejamento",explanation:"olhos lacrimejando muito."},{id:"proptose",name:"Proptose",explanation:"olhos saltados para fora."},{id:"diplopia",name:"Diplopia",explanation:"visão dupla, ver tudo duplicado."},{id:"visao_turva",name:"Visão turva",explanation:"alteração, embaçada ou turva."},{id:"surdez",name:"Surdez",explanation:"perda de audição."},{id:"anosmia",name:"Anosmia",explanation:"perda do olfato, não sentir cheiro."},{id:"zumbido",name:"Zumbido",explanation:"ouvir barulho ou apito nos ouvidos."},{id:"ressonar",name:"Ressonar",explanation:"roncar alto ao dormir."},{id:"otorreia",name:"Otorreia",explanation:"saída de secreção pelo ouvido."},{id:"otalgia",name:"Otalgia",explanation:"dor de ouvido."},{id:"coriza",name:"Coriza",explanation:"nariz escorrendo."},{id:"priapismo",name:"Priapismo",explanation:"ereção persistente e dolorosa."},{id:"disuria",name:"Disúria",explanation:"dor ou ardência para urinar."},{id:"poliuria",name:"Poliúria",explanation:"urinar muitas vezes ou em grande quantidade."},{id:"retencao_urinaria",name:"Retenção urinária",explanation:"dificuldade ou não conseguir urinar."},{id:"incontinencia_urinaria",name:"Incontinência urinária",explanation:"perder urina sem querer."},{id:"nodulo",name:"Nódulo",explanation:"caroço palpável em alguma parte do corpo."},{id:"secrecao",name:"Secreção",explanation:"saída de líquido anormal (ex: mamilo, ouvido)."},{id:"amenorreia",name:"Amenorreia",explanation:"ausência de menstruação."},{id:"dismenorreia",name:"Dismenorreia",explanation:"dor forte durante a menstruação."},{id:"colicas",name:"Cólicas",explanation:"dor em cólica, principalmente no abdome."},{id:"dor_pelvica",name:"Dor pélvica",explanation:"dor ou desconforto na parte de baixo da barriga."},{id:"inchaco",name:"Inchaço",explanation:"aumento do volume de alguma parte do corpo."}];
+            const emergencies = [
+                { id: 'afogamento', name: "Afogamento", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM6.22 8.22a.75.75 0 001.06 1.06L10 6.56l2.72 2.72a.75.75 0 101.06-1.06L10 4.44 6.22 8.22zM10 18a.75.75 0 01-.75-.75v-4.5a.75.75 0 011.5 0v4.5A.75.75 0 0110 18z" clip-rule="evenodd" /></svg>`, details: { title: "Afogamento", what_is: "Ocorre quando a submersão em líquido causa asfixia ou interfere na respiração, privando o corpo de oxigênio.", symptoms: "Pânico, incapacidade de falar, tosse, pele azulada (cianose), perda de consciência, ausência de respiração.", first_aid: "<b>1. Segurança:</b> Não entre na água se não for treinado. Tente alcançar com um objeto. <br><b>2. Chame Ajuda (192/193).</b><br><b>3. Verifique a Respiração.</b><br><b>4. Inicie com 5 Respirações de Resgate antes das compressões.</b><br><b>5. Se sem sinais de vida, inicie RCP (30 compressões para 2 respirações).</b><br><b>6. Aqueça a vítima.</b><br><em>A submersão em água fria pode prolongar a sobrevida (reflexo de mergulho).</em>" }},
+                { id: 'choque', name: "Choque", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M11.983 1.904a1 1 0 00-1.966 0l-3.334 6.667-6.666 3.333a1 1 0 000 1.967l6.666 3.333 3.334 6.667a1 1 0 001.966 0l3.334-6.667 6.666-3.333a1 1 0 000-1.967l-6.666-3.333-3.334-6.667z" /></svg>`, details: { title: "Choque", what_is: "Uma condição com risco à vida onde o fluxo sanguíneo é baixo, diminuindo o fornecimento de oxigênio aos órgãos.", symptoms: "Pele fria, pálida e úmida; pulso fraco e rápido; respiração rápida; confusão, sonolência; perda de consciência.", first_aid: "<b>1. Ligue para 192.</b><br><b>2. Trate a Causa Óbvia (ex: hemorragia).</b><br><b>3. Deite a vítima e eleve as pernas</b> (se não houver lesão na coluna).<br><b>4. Mantenha a vítima aquecida.</b><br><b>5. Não dê nada para beber ou comer.</b>" }},
+                { id: 'fraturas', name: "Fraturas", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M3.5 2.75a.75.75 0 00-1.5 0v14.5a.75.75 0 001.5 0v-5.372l1.94 1.94a.75.75 0 001.06-1.06L5.56 11.25h1.69l-1.44 1.44a.75.75 0 001.06 1.06l1.94-1.94V17.25a.75.75 0 001.5 0v-5.372l1.94 1.94a.75.75 0 001.06-1.06L11.81 11.25h1.69l-1.44 1.44a.75.75 0 001.06 1.06l1.94-1.94V17.25a.75.75 0 001.5 0V2.75a.75.75 0 00-1.5 0v5.372l-1.94-1.94a.75.75 0 00-1.06 1.06l1.44 1.44h-1.69l1.44-1.44a.75.75 0 00-1.06-1.06l-1.94 1.94V2.75a.75.75 0 00-1.5 0v5.372L8.94 6.182a.75.75 0 00-1.06 1.06l1.44 1.44H7.63l1.44-1.44a.75.75 0 10-1.06-1.06L6.07 8.122V2.75a.75.75 0 00-1.5 0v5.372L2.63 6.182a.75.75 0 10-1.06 1.06l1.44 1.44H1.32a.75.75 0 000 1.5h1.69l-1.94 1.94a.75.75 0 001.06 1.06L3.5 13.622v-2.372z"/></svg>`, details: { title: "Fraturas", what_is: "Uma quebra ou rachadura em um osso. Pode ser fechada (pele intacta) ou aberta (osso perfura a pele).", symptoms: "Dor intensa, inchaço, deformidade, incapacidade de mover a área, osso visível (fratura aberta).", first_aid: "<b>1. Ligue para 192.</b><br><b>2. Controle o Sangramento</b> se for fratura aberta (pressione ao redor, não sobre o osso).<br><b>3. Imobilize a lesão</b> na posição em que a encontrou com talas improvisadas. Não tente realinhar.<br><b>4. Aplique Gelo.</b><br><em>Dor que piora continuamente pode ser síndrome compartimental, uma emergência.</em>" }},
+                { id: 'doenca_altitude', name: "Doença da Altitude", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.789 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg>`, details: { title: "Doença da Altitude", what_is: "Ocorre pela falta de oxigênio em altitudes elevadas, geralmente acima de 2.500 metros.", symptoms: "<b>Leve (DAM):</b> Dor de cabeça, náusea, fadiga.<br><b>Grave (ECGA/EPGA):</b> Confusão, marcha instável, falta de ar extrema, tosse com espuma.", first_aid: "<b>O melhor tratamento é DESCER.</b><br><b>1. DAM Leve:</b> Pare a subida, descanse, hidrate-se, use analgésicos.<br><b>2. DAM Grave, ECGA ou EPGA:</b> Desça imediatamente. Chame ajuda. Forneça oxigênio, se disponível.<br><em>A prevenção é subir lentamente (aclimatação).</em>" }},
+                { id: 'feridas', name: "Feridas", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>`, details: { title: "Feridas", what_is: "Cortes, rasgos ou perfurações na pele.", symptoms: "Sangramento, dor. Se um nervo ou tendão for afetado, pode haver fraqueza ou dormência.", first_aid: "<b>1. Estanque o Sangramento:</b> Aplique pressão direta e firme por 5 minutos. Eleve o membro.<br><b>2. Limpe a Ferida:</b> Lave com água e sabão. Remova detritos visíveis.<br><b>3. Cubra com curativo limpo.</b><br><em>Procure um médico se o corte for profundo, não parar de sangrar, ou se houver sinais de infecção (vermelhidão, pus, febre).</em>" }},
+                { id: 'insolacao', name: "Insolação", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zM4.225 6.468a.75.75 0 01.227 1.036l-.06.098a7.5 7.5 0 0010.516 1.482.75.75 0 011.23-.75l.001-.002a9 9 0 11-13.391-3.32.75.75 0 011.036.228l.098.06zM16 10a1 1 0 10-2 0v.01a1 1 0 102 0V10z" clip-rule="evenodd" /></svg>`, details: { title: "Insolação", what_is: "Emergência com risco de vida que ocorre quando o corpo superaquece (acima de 40°C) e perde a capacidade de se resfriar.", symptoms: "Temperatura corporal muito alta, pele quente e vermelha (pode estar seca ou úmida), confusão, desorientação, convulsões, coma.", first_aid: "<b>1. Ligue para 192 IMEDIATAMENTE.</b><br><b>2. Resfrie a pessoa RAPIDAMENTE:</b> Mova para a sombra, remova roupas, borrife com água e ventile. Se possível, imersão em água fria.<br><b>3. NÃO dê medicamentos para febre.</b>" }},
+                { id: 'lesoes_eletricas', name: "Lesões Elétricas", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>`, details: { title: "Lesões por Eletricidade", what_is: "Danos causados pela passagem de uma corrente elétrica pelo corpo.", symptoms: "Queimaduras na pele (pontos de entrada/saída), parada cardíaca, arritmias, convulsões, perda de consciência.", first_aid: "<b>1. SEGURANÇA: NÃO TOQUE NA VÍTIMA. Desligue a fonte de energia primeiro.</b><br><b>2. Ligue para 192.</b><br><b>3. Verifique a respiração e pulso. Inicie RCP se necessário.</b><br><b>4. Trate as queimaduras visíveis e o choque.</b>" }},
+                { id: "lesoes_raios", name: "Lesões por Raios", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M11.383 2.214a1 1 0 00-1.523-.68l-7.33 4.822a1 1 0 00.68 1.884l3.125-.893 1.106 4.322a1 1 0 001.942-.496L8.604 9.14l3.617-2.285a1 1 0 00.58-1.54l-1.418-3.102zM15.018 11.2a1 1 0 00-1.523-.68l-7.33 4.822a1 1 0 00.68 1.884l3.125-.893 1.106 4.322a1 1 0 001.942-.496l-.98-4.026 3.617-2.285a1 1 0 00.58-1.54l-1.418-3.102z"/></svg>`, details: { title: "Lesões por Raios", what_is: "Lesões causadas pela descarga elétrica de um raio. Vítimas não retêm carga elétrica e são seguras para tocar.", symptoms: "Parada cardíaca/respiratória, perda de consciência, queimaduras, paralisia temporária, tímpanos perfurados.", first_aid: "<b>1. Ligue para 192.</b><br><b>2. Mova para local seguro.</b><br><b>3. Inicie RCP imediatamente se não houver pulso/respiração.</b> A reanimação imediata é crucial.<br><b>4. Trate outras lesões (queimaduras, fraturas).</b>" } },
+                { id: "mordida_humana", name: "Mordida Humana", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a.75.75 0 01.75.75v.518a4.5 4.5 0 013.978 4.225 1.75 1.75 0 010 3.504 4.5 4.5 0 01-3.978 4.225v.518a.75.75 0 01-1.5 0v-.518A4.5 4.5 0 016.022 11a1.75 1.75 0 010-3.504A4.5 4.5 0 019.25 3.268V2.75A.75.75 0 0110 2zM5.05 12.95a5.993 5.993 0 001.954 2.373.75.75 0 10.94-1.151 4.493 4.493 0 01-1.466-1.78.75.75 0 00-1.37.588.75.75 0 00.058.269zM14.95 7.05a5.993 5.993 0 00-1.954-2.373.75.75 0 10-.94 1.151 4.493 4.493 0 011.466 1.78.75.75 0 101.428-.458z"/></svg>`, details: { title: "Mordida Humana", what_is: "Ferida causada por dentes humanos, com alto risco de infecção devido a bactérias na boca.", symptoms: "Dor, marcas de dentes, laceração. Mordidas de 'punho cerrado' são especialmente perigosas.", first_aid: "<b>1. Lave a ferida vigorosamente</b> com água e sabão por vários minutos.<br><b>2. Controle o sangramento</b> com pressão direta.<br><b>3. Cubra com curativo limpo.</b><br><em>Toda mordida que rompe a pele precisa de avaliação médica para antibióticos e vacina antitetânica.</em>" } },
+                { id: "mordida_animal", name: "Mordidas de Animais", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M11 5.5a1 1 0 10-2 0v.093c-1.28.23-2.5 1.043-3.447 2.226a1 1 0 001.594 1.207A2.5 2.5 0 0110.5 8.093V8a1 1 0 112 0v2.093a2.5 2.5 0 012.353 1.933A1 1 0 0016 11.5a1 1 0 100-2c-.553 0-1-.448-1-1v-.093a4.5 4.5 0 00-3.447-4.226C11.381 4.148 11.196 4 11 4v1.5z"/><path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM6.357 5.093a6.5 6.5 0 117.286 11.026.5.5 0 00-.31-.527l-1.956-.848a2.5 2.5 0 00-2.613.31l-.235.196a.5.5 0 01-.693-.034l-1.074-.921a.5.5 0 00-.594-.038l-1.784.892.002-.001A6.5 6.5 0 016.357 5.093z" clip-rule="evenodd"/></svg>`, details: { title: "Mordidas de Animais", what_is: "Ferida causada por mordida de animal, com risco de dano tecidual, infecção e raiva.", symptoms: "Laceração, perfuração profunda, dor, inchaço. Mordidas de gato têm alto risco de infecção.", first_aid: "<b>1. Lave a ferida</b> com água e sabão por vários minutos.<br><b>2. Controle o sangramento</b> com pressão direta.<br><b>3. Cubra com curativo limpo.</b><br><em>Procure atendimento médico para avaliação de pontos, antibióticos e profilaxia contra raiva e tétano. Tente identificar o animal.</em>" } },
+                { id: "mordida_serpente", name: "Mordidas de Serpente", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M16.483 4.276l-3.182 1.91a.5.5 0 01-.634-.05L10 3.612 7.333 6.136a.5.5 0 01-.634.05L3.517 4.276a.5.5 0 01.316-.949l3.417.427a.5.5 0 00.567-.217L10 1.25l2.183 2.287a.5.5 0 00.567.217l3.417-.427a.5.5 0 01.316.949z"/><path fill-rule="evenodd" d="M5.403 7.58a.5.5 0 01.316.949l.34.042a1.5 1.5 0 001.371-.531L10 5.428l2.57 2.612a1.5 1.5 0 001.37.53l.341-.043a.5.5 0 01.316.95l-1.638.204a1.5 1.5 0 00-1.144.423L10 12.388l-1.815-1.89a1.5 1.5 0 00-1.144-.424l-1.638-.203zM2 12a.5.5 0 01.5-.5h15a.5.5 0 010 1H2.5a.5.5 0 01-.5-.5z" clip-rule="evenodd"/></svg>`, details: { title: "Mordidas de Serpentes", what_is: "Picada de uma serpente, que pode ou não injetar veneno (peçonha).", symptoms: "<b>Víboras:</b> Dor, inchaço rápido, manchas roxas, bolhas.<br><b>Serpente Coral:</b> Pouca dor inicial, sintomas neurológicos (formigamento, fraqueza, visão dupla) podem demorar horas.", first_aid: "<b>1. Ligue para 192 ou vá ao hospital IMEDIATAMENTE.</b><br><b>2. Mantenha a vítima calma e em repouso.</b><br><b>3. Mantenha a área da mordida abaixo do nível do coração.</b><br><b>4. Remova roupas apertadas e anéis.</b><br><b>O QUE NÃO FAZER:</b> Torniquete, cortar, sugar, gelo, álcool." } },
+                { id: "queimadura_olho", name: "Queimaduras no Olho", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>`, details: { title: "Queimaduras no Olho", what_is: "Dano ao olho causado por produtos químicos ou calor. Queimaduras químicas são extremamente perigosas.", symptoms: "Dor intensa, vermelhidão, lacrimejamento, incapacidade de abrir o olho, visão turva.", first_aid: "<b>QUEIMADURAS QUÍMICAS: LAVE O OLHO IMEDIATAMENTE</b> com água corrente limpa por <b>pelo menos 15-20 minutos</b>, mantendo a pálpebra aberta. Continue a lavar a caminho do hospital. Ligue para 192.<br><b>QUEIMADURAS POR CALOR:</b> Aplique compressas frias e úmidas. Procure atendimento médico." } },
+                { id: "picada_abelha", name: "Picadas de Insetos", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>`, details: { title: "Picadas de Insetos (Abelhas, Vespas)", what_is: "Injeção de veneno por insetos, causando reação local. O maior perigo é a reação alérgica grave (anafilaxia).", symptoms: "Dor, vermelhidão, inchaço, coceira. <b>Sinais de Anafilaxia:</b> dificuldade para respirar, inchaço da garganta/lábios, urticária generalizada, tontura.", first_aid: "<b>1. Remova o ferrão (abelha)</b> raspando-o. Não use pinça.<br><b>2. Lave o local e aplique gelo.</b><br><b>3. Para Anafilaxia: LIGUE PARA 192.</b> Se a pessoa tiver um autoinjetor de epinefrina (EpiPen), ajude-a a usar." } },
+                { id: "inalacao_fumaca", name: "Inalação de Fumaça", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 1.5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5a.75.75 0 01.75-.75zM5.505 5.832a.75.75 0 01.932 1.174l-2.32 1.856a.75.75 0 11-.932-1.174l2.32-1.856zM14.495 5.832a.75.75 0 00-.932 1.174l2.32 1.856a.75.75 0 00.932-1.174l-2.32-1.856zM10 12a1 1 0 110-2 1 1 0 010 2z" clip-rule="evenodd"/><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.75 7.153a6.5 6.5 0 1111.41 2.083.75.75 0 01-1.3-.75 5 5 0 10-8.81 1.418.75.75 0 11-1.3-.75z"/></svg>`, details: { title: "Inalação de Fumaça", what_is: "Lesão das vias respiratórias pela respiração de gases quentes e tóxicos de um incêndio.", symptoms: "Tosse, falta de ar, fuligem na boca/nariz, rouquidão, queimaduras no rosto, confusão.", first_aid: "<b>1. Remova a vítima para o ar fresco.</b><br><b>2. Ligue para 192.</b><br><b>3. Verifique a respiração (inicie RCP se necessário).</b><br><b>4. Afrouxe roupas apertadas no pescoço.</b>" } },
+                { id: "ulcera_frio", name: "Úlcera de Frio (Frostbite)", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M10 4a.75.75 0 01.75.75v.01c0 .414.336.75.75.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 00-.75.75v.01a.75.75 0 01-1.5 0v-.01a.75.75 0 00-.75-.75h-.01a.75.75 0 01-.75-.75v-.01a.75.75 0 01.75-.75h.01a.75.75 0 00.75-.75V4.75A.75.75 0 0110 4zM8.365 6.012a.75.75 0 01-.17 1.05l-1.95 1.463a.75.75 0 11-.88-1.222l1.95-1.463a.75.75 0 011.05.17zM12.685 7.062a.75.75 0 011.05-.17l1.95 1.463a.75.75 0 11-.88 1.222l-1.95-1.463a.75.75 0 01-.17-1.05zM15 11.25a.75.75 0 01.75-.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75v-.01zM4.25 11.25a.75.75 0 01.75-.75h.01a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75v-.01zM11.635 14.988a.75.75 0 01-1.05.17l-1.95-1.463a.75.75 0 11.88-1.222l1.95 1.463a.75.75 0 01-.17 1.05zM7.315 13.712a.75.75 0 01.88 1.222l-1.95 1.463a.75.75 0 11-.88-1.222l1.95-1.463z" /></svg>`, details: { title: "Úlcera de Frio (Congelamento)", what_is: "Congelamento dos tecidos do corpo, mais comum em extremidades (dedos, nariz, orelhas).", symptoms: "Pele pálida/vermelha, formigamento, dormência. Em estágios avançados, a área fica branca, cerosa e dura.", first_aid: "<b>1. Mova para local aquecido.</b><br><b>2. NÃO reaqueça se houver risco de recongelar.</b><br><b>3. Reaquecimento GRADUAL:</b> Mergulhe a área em água morna (NÃO quente) por 20-30 min.<br><b>4. NÃO esfregue a área.</b><br><b>5. Procure atendimento médico.</b>" } },
+                { id: "primeiros_socorros", name: "Prioridades Primeiros Socorros", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 1.5a.75.75 0 00-1.5 0v4.342a.75.75 0 01-1.5 0V3.362a.75.75 0 00-1.5 0v2.48a.75.75 0 01-1.5 0V4.862a.75.75 0 00-1.5 0v1.98A.75.75 0 012 6.092v7.816a.75.75 0 01-1.5 0V6.092a2.25 2.25 0 012.25-2.25h.53a.75.75 0 010 1.5H4.5a.75.75 0 00-.75.75v1.98a.75.75 0 011.5 0v-1.23a.75.75 0 00-1.5 0v.65a.75.75 0 011.5 0V8.34a.75.75 0 00-1.5 0v.65a.75.75 0 011.5 0v.65a.75.75 0 00-1.5 0V10a.75.75 0 011.5 0v.65a.75.75 0 00-1.5 0v.65a.75.75 0 011.5 0V12a.75.75 0 00-1.5 0v.65a.75.75 0 011.5 0v.65a.75.75 0 00-1.5 0v.65a.75.75 0 011.5 0V15a.75.75 0 00-.75-.75h-.53a.75.75 0 010-1.5h.53A2.25 2.25 0 014.5 15v1.408a.75.75 0 01-1.5 0V15a.75.75 0 00-1.5 0v1.408a.75.75 0 011.5 0V17a.75.75 0 001.5 0v-1.408a.75.75 0 011.5 0v.816a.75.75 0 001.5 0v-1.408a.75.75 0 011.5 0v.816a.75.75 0 001.5 0v-1.408a.75.75 0 011.5 0v.816a.75.75 0 001.5 0v-1.408a.75.75 0 011.5 0v.816a.75.75 0 001.5 0v-1.408a.75.75 0 011.5 0V17a.75.75 0 001.5 0v-1.592a.75.75 0 011.5 0v.816a.75.75 0 001.5 0v-1.408a.75.75 0 011.5 0v.816a.75.75 0 001.5 0v-1.408a.75.75 0 011.5 0V17a.75.75 0 00.75-.75h.53a.75.75 0 010 1.5h-.53a2.25 2.25 0 01-2.25-2.25V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a2.25 2.25 0 012.25-2.25h.53a.75.75 0 010-1.5h-.53a.75.75 0 00-.75.75v1.98a.75.75 0 01-1.5 0v-.65a.75.75 0 00-1.5 0v.65a.75.75 0 01-1.5 0v.65a.75.75 0 00-1.5 0V10a.75.75 0 01-1.5 0v-.65a.75.75 0 00-1.5 0v-.65a.75.75 0 01-1.5 0v-.65a.75.75 0 00-1.5 0v-1.23a.75.75 0 011.5 0v1.98a.75.75 0 00.75.75h.53a.75.75 0 010 1.5h-.53A2.25 2.25 0 0112 11.158V3.342a2.25 2.25 0 012.25-2.25h.53a.75.75 0 010-1.5h-.53a.75.75 0 00-.75.75v1.23a.75.75 0 01-1.5 0V3.362a.75.75 0 00-1.5 0v1.23a.75.75 0 01-1.5 0V3.362a.75.75 0 00-1.5 0v2.48a.75.75 0 01-1.5 0V4.862a.75.75 0 00-1.5 0v.65a.75.75 0 01-1.5 0v.65a.75.75 0 00-1.5 0v.65a.75.75 0 01-1.5 0v1.98a.75.75 0 00.75.75h.53a.75.75 0 010 1.5h-.53A2.25 2.25 0 01.5 13.908V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a.75.75 0 011.5 0v7.816a.75.75 0 001.5 0V6.092a2.25 2.25 0 012.25-2.25h.53a.75.75 0 010-1.5h-.53a.75.75 0 00-.75.75v1.23a.75.75 0 01-1.5 0v-.65a.75.75 0 00-1.5 0v-.65a.75.75 0 01-1.5 0v-.65a.75.75 0 00-1.5 0V4.862a.75.75 0 011.5 0v2.48a.75.75 0 001.5 0V5.862a.75.75 0 011.5 0v2.48a.75.75 0 001.5 0V5.862a.75.75 0 011.5 0v2.48a.75.75 0 001.5 0V5.862a.75.75 0 011.5 0v1.23a.75.75 0 00.75.75h.53a.75.75 0 010 1.5h-.53a2.25 2.25 0 01-2.25-2.25V3.342a.75.75 0 00-1.5 0v4.342a.75.75 0 01-1.5 0V3.362a.75.75 0 00-1.5 0v2.48a.75.75 0 01-1.5 0V4.862a.75.75 0 00-1.5 0v1.98a.75.75 0 01.75.75h.53a.75.75 0 010 1.5h-.53A2.25 2.25 0 019.5 8.122V.75a.75.75 0 00-1.5 0z" /></svg>`, details: { title: "Prioridades dos Primeiros Socorros", what_is: "Ordem de ação em emergências para tratar ameaças à vida primeiro.", symptoms: "Variável. Avalie a segurança, chame ajuda, e siga o ABC.", first_aid: "<b>A (Airway):</b> Verifique e abra as vias aéreas.<br><b>B (Breathing):</b> Verifique a respiração; inicie ventilação se necessário.<br><b>C (Circulation):</b> Controle hemorragias graves e inicie RCP se não houver pulso." } },
+                { id: "parada_respiratoria", name: "Obstrução das Vias Respiratórias", icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>`, details: { title: "Obstrução das Vias Respiratórias (Engasgamento)", what_is: "Bloqueio das vias aéreas por um corpo estranho, impedindo a respiração.", symptoms: "Sinal universal de asfixia (mãos no pescoço), incapacidade de falar ou tossir, pele azulada, perda de consciência.", first_aid: "<b>Adulto Consciente:</b> Incentive a tosse. Se não resolver, faça a <b>Manobra de Heimlich</b> (compressões abdominais para dentro e para cima).<br><b>Vítima Inconsciente:</b> Ligue para 192. Inicie RCP. Antes de ventilar, verifique se o objeto é visível na boca e tente remover.<br><b>Bebês (< 1 ano):</b> Alterne 5 tapas nas costas com 5 compressões no peito." }},
+            ];
             
-            if (textData.length === 0) {
-                formErrorMessage.style.display = 'block';
-                return;
+            // --- SCRIPT START ---
+            let selectedSymptoms = [];
+            let currentReportData = null;
+
+            const pageSections = document.querySelectorAll('.page-section');
+            const dashboardCards = document.querySelectorAll('.category-card');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const generateBtn = document.getElementById('generate-report-btn');
+            const examListContainer = document.getElementById('exam-list');
+            const symptomListContainer = document.getElementById('symptom-list');
+            const selectedSymptomsContainer = document.getElementById('selected-symptoms-container');
+            const symptomSearchInput = document.getElementById('symptom-search');
+            const emergencyListContainer = document.getElementById('emergency-list');
+
+            function navigateTo(pageId) { window.scrollTo(0, 0); pageSections.forEach(section => section.classList.toggle('active', section.id === pageId)); }
+            
+            function displayDailyVerse() {
+                const bibleVerses = [
+                    { verse: "com saúde e cheios de força.", ref: "Jó 21:24 (NTLH)" },
+                    { verse: "Elas darão vida longa e saúde a quem entendê-las.", ref: "Provérbios 4:22 (NTLH)" },
+                    { verse: "A alegria faz bem à saúde; estar sempre triste é morrer aos poucos.", ref: "Provérbios 17:22 (NTLH)" },
+                    { verse: "Os que têm saúde não precisam de médico, mas sim os doentes.", ref: "Lucas 5:31 (NTLH)" },
+                    { verse: "Quando estiverem doentes, de cama, o Senhor os ajudará e lhes dará saúde novamente.", ref: "Salmos 41:3 (NTLH)" },
+                    { verse: "A paz de espírito dá saúde ao corpo, mas a inveja destrói como câncer.", ref: "Provérbios 14:30 (NTLH)" },
+                    { verse: "As palavras bondosas são como o mel: doces para o paladar e boas para a saúde.", ref: "Provérbios 16:24 (NTLH)" },
+                    { verse: "Meu querido amigo, tenho pedido a Deus que você vá bem em tudo e que esteja com boa saúde, assim como está bem espiritualmente.", ref: "3João 1:2 (NTLH)" }
+                ];
+                const container = document.getElementById('daily-verse-container');
+                const randomVerse = bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
+                container.innerHTML = `<blockquote class="text-lg italic text-gray-700 font-lora">“${randomVerse.verse}”</blockquote><cite class="block text-right not-italic font-bold text-sm mt-2 text-rose-800/80">${randomVerse.ref}</cite>`;
             }
 
-            loadingSection.style.display = 'block';
-            reportOutput.style.display = 'none';
-            generateBtn.disabled = true;
-            generateBtn.innerHTML = `<div class="loader-small"></div><span class="ml-2">Analisando...</span>`;
+            function updatePatientSummary() {
+                const ageSlider = document.getElementById('age'), weightSlider = document.getElementById('weight'), heightSlider = document.getElementById('height');
+                const age = ageSlider.value, weight = weightSlider.value, height = heightSlider.value;
+                const gender = document.getElementById('gender-input').value || 'Não definido';
+                const heightInMeters = height / 100;
+                const imc = (weight > 0 && height > 0) ? (weight / (heightInMeters * heightInMeters)).toFixed(1) : 0;
+                const getIMCCategory = v => { if (v < 18.5) return { text: 'Abaixo do peso', color: 'text-yellow-500' }; if (v < 24.9) return { text: 'Peso normal', color: 'text-green-600' }; if (v < 29.9) return { text: 'Sobrepeso', color: 'text-yellow-600' }; return { text: 'Obesidade', color: 'text-red-600' }; };
+                const imcCategory = getIMCCategory(imc);
+                document.getElementById('age-value').textContent = `${age} anos`;
+                document.getElementById('weight-value').textContent = `${weight} kg`;
+                document.getElementById('height-value').textContent = `${height} cm`;
+                document.getElementById('patient-info-summary').innerHTML = `<div class="flex justify-between text-sm"><span class="font-medium text-gray-600">Gênero:</span><span class="font-bold">${gender}</span></div><div class="flex justify-between text-sm"><span class="font-medium text-gray-600">Idade:</span><span class="font-bold">${age} anos</span></div><div class="flex justify-between text-sm"><span class="font-medium text-gray-600">Peso:</span><span class="font-bold">${weight} kg</span></div><div class="flex justify-between text-sm"><span class="font-medium text-gray-600">Altura:</span><span class="font-bold">${height} cm</span></div><div class="mt-4 pt-4 border-t border-slate-300"><div class="flex justify-between items-baseline"><span class="font-medium text-gray-600">IMC:</span><span class="text-2xl font-bold ${imcCategory.color}">${imc}</span></div><p class="text-xs font-semibold ${imcCategory.color} text-right">${imcCategory.text}</p></div>`;
+            }
+
+            function renderExamList() {
+                examListContainer.innerHTML = '';
+                exams.forEach(exam => {
+                    if (exam.type === 'heading') { examListContainer.innerHTML += `<h4 class="font-bold text-lg text-rose-800 mt-6 pt-4 border-t first:mt-0 first:border-t-0">${exam.label}</h4>`; }
+                    else { examListContainer.innerHTML += `<div class="flex items-center gap-2 sm:gap-3 bg-slate-50 p-2 rounded-lg border border-transparent hover:border-slate-200"><button type="button" class="explanation-btn flex-shrink-0" data-exam-id="${exam.id}"><svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button><label for="${exam.id}" class="flex-grow font-semibold text-sm text-gray-800">${exam.label}</label><input type="text" inputmode="decimal" id="${exam.id}" data-label="${exam.label}" class="w-20 sm:w-24 text-right rounded-md border-gray-300 p-2 text-sm"><span class="w-16 sm:w-20 text-left text-xs text-gray-500">${exam.unit}</span><button type="button" class="clear-btn text-slate-400 flex-shrink-0" data-target="${exam.id}"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></button></div>`; }
+                });
+            }
+
+            function renderSymptomList(filter = '') {
+                symptomListContainer.innerHTML = '';
+                const filteredSymptoms = symptoms.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()));
+                filteredSymptoms.forEach(symptom => {
+                    const isSelected = selectedSymptoms.some(s => s.id === symptom.id);
+                    symptomListContainer.innerHTML += `<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50"><button type="button" data-symptom-id="${symptom.id}" class="add-symptom-btn text-blue-500 ${isSelected ? 'opacity-25 cursor-not-allowed' : ''}" ${isSelected ? 'disabled' : ''}><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" /></svg></button><div><p class="font-semibold text-sm">${symptom.name}</p><p class="text-xs text-gray-500">${symptom.explanation}</p></div></div>`;
+                });
+            }
             
-            // Chave de API inserida conforme solicitado.
-            const apiKey = "AIzaSyBSwG0EMH7kvf7DLo4j280wb42uaWmp_ZA";
+            function renderSelectedSymptoms() {
+                selectedSymptomsContainer.innerHTML = '';
+                if (selectedSymptoms.length === 0) { selectedSymptomsContainer.innerHTML = `<span class="text-sm text-gray-400 p-2">Nenhum sintoma adicionado.</span>`; return; }
+                selectedSymptoms.forEach(symptom => {
+                    selectedSymptomsContainer.innerHTML += `<span class="symptom-tag">${symptom.name}<button type="button" data-symptom-id="${symptom.id}" class="remove-symptom-btn ml-2 text-indigo-400"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" /></svg></button></span>`;
+                });
+            }
 
-            let mainPrompt = `
-                Aja como um médico especialista em patologia clínica e comunicação com o paciente.
-                Baseado nos dados de laboratório e no contexto clínico fornecidos, gere uma análise para o profissional de saúde e um folheto explicativo para o paciente.
-                O idioma deve ser o mesmo dos dados (português/espanhol).
-
-                A análise deve conter dois componentes:
-                1.  Uma tabela resumo dos valores alterados.
-                2.  Um "Folheto do Paciente" sobre a principal hipótese diagnóstica. Este folheto deve ser escrito em linguagem simples e clara, seguindo o modelo:
-                    - Título: Nome da condição.
-                    - O que é?: Descrição da doença.
-                    - Sinais/sintomas comuns: Lista dos principais sinais.
-                    - Causas ou fatores de risco: Explicação das possíveis causas.
-                    - Possíveis complicações: Riscos associados à doença.
-                    - Opções de tratamento: Resumo das abordagens terapêuticas.
-                    - Quando procurar ajuda: Sinais de alerta para buscar atendimento médico.
-                    - Aconselhamento adicional ou acompanhamento: Recomendações de estilo de vida e seguimento.
-                    - Disclaimer: "Este folheto é apenas para fins informativos gerais e não substitui o aconselhamento médico profissional."
-
-                **Dados Fornecidos para Análise:**\n${textData.map(item => `- ${item.id}: ${item.value}`).join('\n')}
-            `;
+            function renderEmergencyList() {
+                emergencyListContainer.innerHTML = '';
+                emergencies.forEach(item => {
+                    emergencyListContainer.innerHTML += `<div data-emergency-id="${item.id}" class="emergency-item flex items-center gap-4 p-3 bg-slate-50 rounded-lg hover:bg-red-50 hover:shadow-sm transition-all duration-200 cursor-pointer"><div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-red-100 text-red-600 rounded-full">${item.icon}</div><span class="font-semibold text-gray-700">${item.name}</span><svg class="w-5 h-5 ml-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></div>`;
+                });
+            }
             
-            let promptParts = [{ text: mainPrompt }];
+            function displayEmergencyDetail(emergencyId) {
+                const emergency = emergencies.find(e => e.id === emergencyId);
+                if (!emergency) return;
+                document.getElementById('emergency-detail-title').textContent = emergency.details.title;
+                document.getElementById('emergency-detail-content').innerHTML = `<h3>O que é</h3><p>${emergency.details.what_is}</p><h3>Sintomas Importantes</h3><p>${emergency.details.symptoms}</p><h3>Primeiros Socorros / O que fazer Imediatamente</h3><p>${emergency.details.first_aid}</p><p class="mt-6 text-sm italic text-gray-500">Aviso: Esta informação é um resumo para fins informativos. Não substitui o aconselhamento médico profissional.</p>`;
+                navigateTo('emergency-detail-page');
+            }
 
-            const schema = {
-                type: "OBJECT",
-                properties: {
-                    tablaResumen: { 
-                        type: "ARRAY", 
-                        items: { 
-                            type: "OBJECT", 
-                            properties: { 
-                                parametro: { type: "STRING" }, 
-                                valor: { type: "STRING" }, 
-                                interpretacion: { type: "STRING" } 
-                            }, 
-                            required: ["parametro", "valor", "interpretacion"] 
-                        } 
-                    },
-                    folhetoPaciente: {
-                        type: "OBJECT",
-                        properties: {
-                            titulo: { type: "STRING", description: "Nome da principal hipótese diagnóstica." },
-                            oQueE: { type: "STRING", description: "O que é a doença." },
-                            sinaisSintomas: { type: "STRING", description: "Sinais e sintomas comuns." },
-                            causasFatoresRisco: { type: "STRING", description: "Causas ou fatores de risco." },
-                            possiveisComplicacoes: { type: "STRING", description: "Possíveis complicações." },
-                            opcoesTratamento: { type: "STRING", description: "Opções de tratamento." },
-                            quandoProcurarAjuda: { type: "STRING", description: "Quando procurar ajuda médica." },
-                            aconselhamentoAdicional: { type: "STRING", description: "Aconselhamento adicional ou acompanhamento." }
-                        },
-                        required: ["titulo", "oQueE", "sinaisSintomas", "causasFatoresRisco", "possiveisComplicacoes", "opcoesTratamento", "quandoProcurarAjuda", "aconselhamentoAdicional"]
+            function handleSymptomListClick(event) {
+                const addButton = event.target.closest('.add-symptom-btn');
+                if (addButton) {
+                    const symptomId = addButton.dataset.symptomId;
+                    const symptomToAdd = symptoms.find(s => s.id === symptomId);
+                    if (symptomToAdd && !selectedSymptoms.some(s => s.id === symptomId)) {
+                        selectedSymptoms.push(symptomToAdd);
+                        renderSelectedSymptoms();
+                        renderSymptomList(symptomSearchInput.value);
                     }
-                },
-                required: ["tablaResumen", "folhetoPaciente"]
-            };
-
-            try {
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                const payload = { contents: [{ parts: promptParts }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-
-                if (!response.ok) {
-                    const errorBody = await response.json().catch(() => null);
-                    throw new Error(errorBody?.error?.message || `Erro de API: ${response.status}`);
                 }
-                const result = await response.json();
-                if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0].text) {
-                    const reportData = JSON.parse(result.candidates[0].content.parts[0].text);
-                    displayReport(reportData);
-                } else {
-                     throw new Error("Resposta da API inválida ou sem conteúdo.");
-                }
-            } catch (error) {
-                console.error("Erro ao gerar relatório:", error);
-                document.getElementById('error-content').textContent = `Falha na comunicação com a API: ${error.message}`;
-                apiErrorMessage.style.display = 'block';
-            } finally {
-                loadingSection.style.display = 'none';
-                generateBtn.disabled = false;
-                generateBtn.innerHTML = 'Gerar Análise Profissional';
-            }
-        });
-
-        printBtn.addEventListener('click', () => {
-            window.print();
-        });
-
-        whatsappBtn.addEventListener('click', () => {
-            if (!currentReportData) return;
-
-            let message = `*Análise de Exames - Missionary Medical Care*\n\n`;
-            message += `*Hipótese Principal:*\n${currentReportData.folhetoPaciente.titulo || 'N/A'}\n\n`;
-            
-            if(currentReportData.tablaResumen && currentReportData.tablaResumen.length > 0){
-                message += `*Resumo dos Achados Alterados:*\n`;
-                currentReportData.tablaResumen.forEach(item => {
-                    message += `• ${item.parametro}: ${item.valor} (${item.interpretacion})\n`;
-                });
-            } else {
-                message += `*Nenhum valor alterado significativo foi encontrado.*\n`
             }
             
-            message += `\n*Atenção:* Este é um resumo gerado por IA e não substitui uma consulta e avaliação médica completa.`;
+            function handleSelectedSymptomsClick(event) {
+                const removeButton = event.target.closest('.remove-symptom-btn');
+                if (removeButton) {
+                    const symptomId = removeButton.dataset.symptomId;
+                    selectedSymptoms = selectedSymptoms.filter(s => s.id !== symptomId);
+                    renderSelectedSymptoms();
+                    renderSymptomList(symptomSearchInput.value);
+                }
+            }
 
-            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        });
+            function handleExplanationClick(button) {
+                const explanationModalOverlay = document.getElementById('explanation-modal-overlay');
+                const examId = button.dataset.examId;
+                const exam = exams.find(ex => ex.id === examId);
+                if (exam) {
+                    document.getElementById('explanation-modal-title').textContent = exam.label;
+                    document.getElementById('explanation-modal-text').textContent = exam.explanation;
+                    explanationModalOverlay.classList.remove('hidden');
+                }
+            }
+            
+            async function handleGenerateReport() {
+                const formError = document.getElementById('form-error-message');
+                formError.classList.add('hidden');
+                const apiError = document.getElementById('api-error-message');
+                apiError.classList.add('hidden');
 
+                const patientData = [{ id: 'Gênero', value: document.getElementById('gender-input').value },{ id: 'Idade', value: `${document.getElementById('age').value} anos` },{ id: 'Peso', value: `${document.getElementById('weight').value} kg` },{ id: 'Altura', value: `${document.getElementById('height').value} cm` }].filter(item => item.value);
+                const examData = Array.from(document.querySelectorAll('#exam-list input[type="text"]')).map(input => ({ id: input.dataset.label, value: input.value })).filter(item => item.value.trim() !== '');
+                const symptomData = selectedSymptoms.map(s => ({id: s.name, value: ''}));
+                const clinicalContext = { id: 'Notas Adicionais', value: document.getElementById('outros_dados').value };
+                
+                if (examData.length === 0 && symptomData.length === 0) {
+                    formError.innerHTML = '<p class="font-bold">Atenção</p><p>Preencha ao menos um campo de exame ou selecione um sintoma.</p>';
+                    formError.classList.remove('hidden');
+                    navigateTo('dashboard-section');
+                    formError.scrollIntoView();
+                    return;
+                }
 
-        const tabs = document.querySelectorAll('.tab-btn');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetId = tab.dataset.tab;
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById(targetId).classList.add('active');
+                navigateTo('loading-section');
+                generateBtn.disabled = true; generateBtn.innerHTML = `<div class="loader-small"></div><span class="ml-2">Analisando...</span>`;
+                
+                const apiKey = "";
+                let mainPrompt = `Aja como médico especialista... **DADOS PARA ANÁLISE:**\n**Dados do Paciente:**\n${patientData.map(item => `- ${item.id}: ${item.value}`).join('\n')}\n**Sintomas:**\n${symptomData.length > 0 ? symptomData.map(item => `- ${item.id}`).join('\n') : 'Nenhum informado.'}\n**Resultados dos Exames:**\n${examData.length > 0 ? examData.map(item => `- ${item.id}: ${item.value}`).join('\n') : 'Nenhum informado.'}\n${clinicalContext.value.trim() ? `**Notas Adicionais:**\n${clinicalContext.value}` : ''}`;
+                const schema = {type: "OBJECT",properties: {tablaResumen: {type: "ARRAY", items: {type: "OBJECT", properties: {parametro: {type: "STRING"}, valor: {type: "STRING"}, interpretacion: {type: "STRING"}}, required: ["parametro", "valor", "interpretacion"]}}, folhetoPaciente: {type: "OBJECT", properties: {titulo: {type: "STRING"}, oQueE: {type: "STRING"}, sinaisSintomas: {type: "STRING"}, causasFatoresRisco: {type: "STRING"}, possiveisComplicacoes: {type: "STRING"}, opcoesTratamento: {type: "STRING"}, quandoProcurarAjuda: {type: "STRING"}}, required: ["titulo", "oQueE", "sinaisSintomas", "causasFatoresRisco", "possiveisComplicacoes", "opcoesTratamento", "quandoProcurarAjuda"]}}, required: ["tablaResumen", "folhetoPaciente"]};
+                
+                try {
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    const payload = { contents: [{ parts: [{text: mainPrompt}] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } };
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) { const errorBody = await response.json().catch(() => null); throw new Error(errorBody?.error?.message || `Erro de API: ${response.status}`); }
+                    const result = await response.json();
+                    if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0].text) {
+                        currentReportData = JSON.parse(result.candidates[0].content.parts[0].text);
+                        displayReport(currentReportData);
+                        navigateTo('report-output');
+                    } else { throw new Error("Resposta da API inválida ou sem conteúdo."); }
+                } catch (error) {
+                    const apiError = document.getElementById('api-error-message');
+                    apiError.innerHTML = `<p class="font-bold">Erro</p><p>${error.message}</p>`;
+                    apiError.classList.remove('hidden');
+                    navigateTo('dashboard-section');
+                } finally {
+                    generateBtn.disabled = false; generateBtn.innerHTML = 'Gerar Análise Profissional';
+                }
+            }
+
+            function displayReport(data) {
+                const tableContainer = document.getElementById('tabla-resumen-section');
+                let tableHtml = `<table class="min-w-full"><thead class="bg-rose-800 text-white"><tr><th class="p-3 text-left text-xs font-medium">Parâmetro</th><th class="p-3 text-left text-xs font-medium">Valor</th><th class="p-3 text-left text-xs font-medium">Interpretação</th></tr></thead><tbody>`;
+                if (data.tablaResumen && data.tablaResumen.length > 0) {
+                    data.tablaResumen.forEach((item, index) => { tableHtml += `<tr class="${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'}"><td class="p-3 text-sm">${item.parametro}</td><td class="p-3 text-sm">${item.valor}</td><td class="p-3 text-sm">${item.interpretacion}</td></tr>`; });
+                } else { tableHtml += `<tr><td colspan="3" class="p-4 text-center text-gray-500">Nenhum valor alterado significativo.</td></tr>`; }
+                tableHtml += '</tbody></table>';
+                tableContainer.innerHTML = tableHtml;
+
+                const handoutContainer = document.getElementById('folheto-paciente-section');
+                const handout = data.folhetoPaciente;
+                const formatText = (text) => text ? text.replace(/\n/g, '<br>') : 'Informação não disponível.';
+                handoutContainer.innerHTML = `<div class="text-center mb-6"><h2 class="text-sm font-semibold uppercase tracking-wider text-gray-500">FOLHETO DO PACIENTE</h2><p class="text-2xl md:text-3xl font-bold text-gray-800 mt-1">${handout.titulo || 'Análise'}</p></div><h3>O que é?</h3><p>${formatText(handout.oQueE)}</p><h3>Sinais/sintomas comuns</h3><p>${formatText(handout.sinaisSintomas)}</p><h3>Causas ou fatores de risco</h3><p>${formatText(handout.causasFatoresRisco)}</p><h3>Possíveis complicações</h3><p>${formatText(handout.possiveisComplicacoes)}</p><h3>Opções de tratamento</h3><p>${formatText(handout.opcoesTratamento)}</p><h3>Quando procurar ajuda</h3><p>${formatText(handout.quandoProcurarAjuda)}</p><p class="disclaimer">Este folheto é informativo e não substitui o aconselhamento médico profissional.</p>`;
+            }
+            
+            function handleWhatsappShare(){
+                if(!currentReportData) return; let msg = `*Análise de Exames*\n\n*Hipótese:* ${currentReportData.folhetoPaciente.titulo}\n\n*Resumo:*\n${currentReportData.tablaResumen.map(i=>`• ${i.parametro}: ${i.valor} (${i.interpretacion})`).join('\n')}`; window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`);
+            }
+            
+            // --- EVENT LISTENERS ---
+            dashboardCards.forEach(card => card.addEventListener('click', (e) => navigateTo(e.currentTarget.dataset.page)));
+            backButtons.forEach(button => {
+                const target = button.classList.contains('back-to-emergencies-btn') ? 'emergencies-page' : 'dashboard-section';
+                button.addEventListener('click', () => navigateTo(target));
             });
-        });
-
-        function displayReport(data) {
-            currentReportData = data;
             
-            const tableContainer = document.getElementById('tabla-resumen-section');
-            let tableHtml = `<table class="min-w-full"><thead class="bg-rose-800 text-white"><tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase">Parâmetro</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase">Valor</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase">Interpretação</th>
-                            </tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
-            if (data.tablaResumen && data.tablaResumen.length > 0) {
-                data.tablaResumen.forEach((item, index) => {
-                    const bgColor = index % 2 === 0 ? 'bg-white' : 'bg-slate-50';
-                    tableHtml += `<tr class="${bgColor}">
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900">${item.parametro}</td>
-                        <td class="px-6 py-4 text-sm text-gray-700">${item.valor}</td>
-                        <td class="px-6 py-4 text-sm text-gray-700">${item.interpretacion}</td>
-                    </tr>`;
+            const ageSlider = document.getElementById('age');
+            const weightSlider = document.getElementById('weight');
+            const heightSlider = document.getElementById('height');
+            const genderButtons = document.querySelectorAll('.gender-btn');
+
+            [ageSlider, weightSlider, heightSlider].forEach(el => el.addEventListener('input', updatePatientSummary));
+            genderButtons.forEach(button => button.addEventListener('click', () => {
+                genderButtons.forEach(btn => btn.classList.remove('bg-rose-100', 'border-rose-800'));
+                button.classList.add('bg-rose-100', 'border-rose-800');
+                document.getElementById('gender-input').value = button.dataset.gender;
+                updatePatientSummary();
+            }));
+
+            symptomSearchInput.addEventListener('input', (e) => renderSymptomList(e.target.value));
+            symptomListContainer.addEventListener('click', handleSymptomListClick);
+            selectedSymptomsContainer.addEventListener('click', handleSelectedSymptomsClick);
+            emergencyListContainer.addEventListener('click', (e) => {
+                const item = e.target.closest('.emergency-item');
+                if (item) displayEmergencyDetail(item.dataset.emergencyId);
+            });
+            examListContainer.addEventListener('click', (e) => {
+                const clearButton = e.target.closest('.clear-btn');
+                const explanationButton = e.target.closest('.explanation-btn');
+                if (clearButton) { document.getElementById(clearButton.dataset.target).value = ''; }
+                if (explanationButton) { handleExplanationClick(explanationButton); }
+            });
+            
+            document.getElementById('explanation-modal-overlay').addEventListener('click', e => {
+                 if (e.target.id === 'explanation-modal-overlay' || e.target.closest('#explanation-modal-close-btn')) {
+                     document.getElementById('explanation-modal-overlay').classList.add('hidden');
+                 }
+            });
+            
+            generateBtn.addEventListener('click', handleGenerateReport);
+            document.getElementById('print-report-btn').addEventListener('click', () => window.print());
+            document.getElementById('whatsapp-share-btn').addEventListener('click', handleWhatsappShare);
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById(tab.dataset.tab).classList.add('active');
                 });
-            } else {
-                tableHtml += `<tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhum valor alterado significativo foi encontrado.</td></tr>`;
-            }
-            tableHtml += '</tbody></table>';
-            tableContainer.innerHTML = tableHtml;
-
-            const handoutContainer = document.getElementById('folheto-paciente-section');
-            const handout = data.folhetoPaciente || {};
+            });
             
-            const formatText = (text) => text ? text.replace(/\n/g, '<br>') : 'Informação não disponível.';
-
-            handoutContainer.innerHTML = `
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">${handout.titulo || 'Folheto Informativo'}</h2>
-                <h3>O que é?</h3><p>${formatText(handout.oQueE)}</p>
-                <h3>Sinais/sintomas comuns</h3><p>${formatText(handout.sinaisSintomas)}</p>
-                <h3>Causas ou fatores de risco</h3><p>${formatText(handout.causasFatoresRisco)}</p>
-                <h3>Possíveis complicações</h3><p>${formatText(handout.possiveisComplicacoes)}</p>
-                <h3>Opções de tratamento</h3><p>${formatText(handout.opcoesTratamento)}</p>
-                <h3>Quando procurar ajuda</h3><p>${formatText(handout.quandoProcurarAjuda)}</p>
-                <h3>Aconselhamento adicional ou acompanhamento</h3><p>${formatText(handout.aconselhamentoAdicional)}</p>
-                <p class="disclaimer">Este folheto é apenas para fins informativos gerais e não substitui o aconselhamento médico profissional.</p>
-            `;
-            
-            reportOutput.style.display = 'block';
-            reportOutput.scrollIntoView({ behavior: 'smooth' });
-        }
+            // --- INITIALIZATION ---
+            updatePatientSummary();
+            renderExamList();
+            renderSymptomList();
+            renderSelectedSymptoms();
+            renderEmergencyList();
+            displayDailyVerse();
+        });
     </script>
 </body>
 </html>
